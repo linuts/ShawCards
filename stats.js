@@ -9,9 +9,30 @@
   const total = (stats.totalCorrect || 0) + (stats.totalWrong || 0);
   document.getElementById('overallAcc').textContent = total ? Math.round((stats.totalCorrect || 0) / total * 100) + '%' : '0%';
 
+  const attempts = stats.attempts || [];
+  let corr = 0, wrongCnt = 0;
+  const progressPoints = attempts.map(a => {
+    if (a.result === 'correct') corr++; else wrongCnt++;
+    const pct = (corr + wrongCnt) ? corr / (corr + wrongCnt) * 100 : 0;
+    return { x: new Date(a.t), y: pct };
+  });
+
   const labels = deck.map(d => d.glyph);
   const correct = deck.map(d => (stats.perCard && stats.perCard[d.id] ? stats.perCard[d.id].correct : 0));
   const wrong = deck.map(d => (stats.perCard && stats.perCard[d.id] ? stats.perCard[d.id].wrong : 0));
+
+  const progCtx = document.getElementById('progressChart').getContext('2d');
+  new Chart(progCtx, {
+    type: 'line',
+    data: { datasets: [{ label: '% Learned', data: progressPoints, borderColor: 'rgba(59,130,246,0.8)', fill: false }] },
+    options: {
+      responsive: true,
+      scales: {
+        x: { type: 'time' },
+        y: { beginAtZero: true, max: 100 }
+      }
+    }
+  });
 
   const ctx = document.getElementById('perCardChart').getContext('2d');
   new Chart(ctx, {
