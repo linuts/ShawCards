@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shavian Flashcards</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="bar">
+    <h1>Shavian Flashcards</h1>
+    <div class="actions">
+      <button id="shuffleBtn">Shuffle</button>
+      <button id="resetBtn">Reset stats</button>
+      <button id="editDeckBtn">Deck JSON</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card-col">
+      <div class="progress"><div id="progressInner"></div></div>
+
+      <div id="card" class="card" tabindex="0" aria-label="Flashcard (press space to flip)">
+        <div id="cardFront" class="face show"></div>
+        <div id="cardBack" class="face"></div>
+      </div>
+
+      <div class="controls">
+        <button id="skipBtn">Skip</button>
+        <button id="wrongBtn" class="wrong">Wrong</button>
+        <button id="correctBtn" class="correct">Correct</button>
+      </div>
+
+      <p class="tip">Click or press <kbd>Space</kbd> to flip. Use <kbd>←</kbd>/<kbd>→</kbd> for Wrong/Correct.</p>
+    </section>
+
+    <aside class="stats-col">
+      <div class="stats">
+        <h2>Session stats</h2>
+        <div class="stats-cards">
+          <div class="stat"><div id="correctCount" class="num">0</div><div class="lbl">Correct</div></div>
+          <div class="stat"><div id="wrongCount" class="num">0</div><div class="lbl">Wrong</div></div>
+          <div class="stat"><div id="accuracy" class="num">0%</div><div class="lbl">Accuracy</div></div>
+        </div>
+
+        <h3>Per-card</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Letter</th><th>Name</th><th class="tr">✔︎</th><th class="tr">✖︎</th><th class="tr">Acc</th></tr></thead>
+            <tbody id="perCardBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <dialog id="deckDialog">
+    <form method="dialog">
+      <h3>Edit deck (JSON)</h3>
+      <textarea id="deckTextarea"></textarea>
+      <div class="dlg-actions">
+        <button id="resetDeckBtn" value="reset" type="button">Reset to default</button>
+        <button id="saveDeckBtn" value="default" type="button" class="primary">Save</button>
+        <button value="cancel">Close</button>
+      </div>
+      <p class="help">Fields: <code>id</code>, <code>glyph</code>, <code>name</code>, optional <code>ipa</code>. Stats are tracked per <code>id</code>. If glyphs are boxes, install a font like <em>Noto Sans Shavian</em>.</p>
+    </form>
+  </dialog>
+
+  <footer class="foot">Built with Go + vanilla JS. Data lives in your browser (localStorage).</footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
