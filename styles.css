@@ -15,6 +15,7 @@ body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sa
 button{ padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:#fff; cursor:pointer; }
 button.correct{ background: #10b981; color:#fff; border-color:#10b981; }
 button.wrong{ background: #fecaca; border-color:#fecaca; }
+ a.button-link{ padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:#fff; text-decoration:none; color:var(--ink); display:inline-block; }
 .progress{ height:8px; background:#e5e7eb; border-radius:9999px; overflow:hidden; margin:8px 0 14px; }
 #progressInner{ height:100%; background:#10b981; width:0%; }
 .stats{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
@@ -36,4 +37,6 @@ dialog form{ padding:16px; }
 #deckTextarea{ width:100%; height:340px; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; padding:10px; border:1px solid var(--line); border-radius:12px; }
 .dlg-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:8px; }
 button.primary{ background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
+.stats-page{ max-width:900px; margin:0 auto; padding:16px; }
+.chart-wrap{ max-width:100%; }
 @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } #cardFront{ font-size:72px; } }

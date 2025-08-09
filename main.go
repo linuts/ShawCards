@@ -16,6 +16,12 @@ var appJS string
 //go:embed styles.css
 var stylesCSS string
 
+//go:embed stats.html
+var statsHTML string
+
+//go:embed stats.js
+var statsJS string
+
 func main() {
 	mux := http.NewServeMux()
 
@@ -35,6 +41,18 @@ func main() {
 	mux.HandleFunc("/styles.css", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css; charset=utf-8")
 		fmt.Fprint(w, stylesCSS)
+	})
+
+	// Serve stats.html
+	mux.HandleFunc("/stats", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, statsHTML)
+	})
+
+	// Serve stats.js
+	mux.HandleFunc("/stats.js", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+		fmt.Fprint(w, statsJS)
 	})
 
 	addr := ":8080"
