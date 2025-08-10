@@ -81,6 +81,20 @@
   const wrongCount = el('wrongCount');
   const accuracy = el('accuracy');
   const perCardBody = el('perCardBody');
+  const cardProgressChart = new Chart(document.getElementById('cardProgressChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      datasets: [
+        { label: '% Learned', data: [], borderColor: 'rgba(16,185,129,0.8)', fill: false },
+        { label: 'Trend', data: [], borderColor: 'rgba(59,130,246,0.8)', fill: false, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: { x: { type: 'linear', beginAtZero: true }, y: { beginAtZero: true, max: 100 } },
+      plugins: { legend: { display: false } }
+    }
+  });
 
   function render() {
     const cur = current();
@@ -90,30 +104,39 @@
     cardFront.classList.toggle('show', !flipped);
     cardBack.classList.toggle('show', flipped);
 
-    const { pct, trendPct } = (function() {
-      const attempts = stats.attempts || [];
+    const pc = stats.perCard[cur.id] || {correct:0, wrong:0, attempts:[]};
+    const { pct, trendPct, points, trendLine } = (function() {
+      const attempts = pc.attempts || [];
       const alpha = 0.3;
       let ema = 0;
       const points = attempts.map((a, i) => {
         const val = a.result === 'correct' ? 1 : 0;
         ema = i === 0 ? val : alpha * val + (1 - alpha) * ema;
-        return { i, y: ema * 100 };
+        return { x: i, y: ema * 100 };
       });
-      const currentPct = points.length ? points[points.length - 1].y : 0;
-      let predicted = currentPct;
       const n = points.length;
+      const currentPct = n ? points[n - 1].y : 0;
+      let predicted = currentPct;
+      let trendLine = [];
       if (n >= 2) {
         let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
-        points.forEach(p => { sumX += p.i; sumY += p.y; sumXY += p.i * p.y; sumXX += p.i * p.i; });
+        points.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumXX += p.x * p.x; });
         const denom = n * sumXX - sumX * sumX;
         const m = denom ? (n * sumXY - sumX * sumY) / denom : 0;
         const b = (sumY - m * sumX) / n;
         predicted = clamp(m * n + b, 0, 100);
+        trendLine = [
+          { x: 0, y: clamp(b, 0, 100) },
+          { x: n, y: predicted }
+        ];
       }
-      return { pct: Math.round(currentPct), trendPct: Math.round(predicted) };
+      return { pct: Math.round(currentPct), trendPct: Math.round(predicted), points, trendLine };
     })();
     progressInner.style.width = pct + '%';
     progressTrend.style.width = trendPct + '%';
+    cardProgressChart.data.datasets[0].data = points;
+    cardProgressChart.data.datasets[1].data = trendLine;
+    cardProgressChart.update();
 
     correctCount.textContent = stats.totalCorrect;
     wrongCount.textContent = stats.totalWrong;
@@ -144,11 +167,13 @@
 
   function record(result) {
     const id = current().id;
-    const pc = stats.perCard[id] || {correct:0, wrong:0};
+    const pc = stats.perCard[id] || {correct:0, wrong:0, attempts:[]};
+    const now = Date.now();
     if (result === 'correct') { pc.correct++; stats.totalCorrect++; }
     else { pc.wrong++; stats.totalWrong++; }
+    (pc.attempts || (pc.attempts = [])).push({ t: now, result });
     stats.perCard[id] = pc;
-    (stats.attempts || (stats.attempts = [])).push({ t: Date.now(), result });
+    (stats.attempts || (stats.attempts = [])).push({ t: now, result });
     requeue(result);
     render();
   }
