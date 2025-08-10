@@ -17,6 +17,7 @@ button.correct{ background: #10b981; color:#fff; border-color:#10b981; }
 button.wrong{ background: #fecaca; border-color:#fecaca; }
  a.button-link{ padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:#fff; text-decoration:none; color:var(--ink); display:inline-block; }
 .progress{ position:relative; height:8px; background:#e5e7eb; border-radius:9999px; overflow:hidden; margin:8px 0 14px; }
+#forecastInner{ position:absolute; top:0; left:0; height:100%; width:0%; background:#3b82f6; opacity:.4; }
 #progressInner{ position:absolute; top:0; left:0; height:100%; width:0%; background:#10b981; }
 .stats{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
 .stats h2{ margin:4px 0 12px; font-size:18px; }

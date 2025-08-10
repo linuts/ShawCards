@@ -44,18 +44,8 @@
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const el = (id) => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
-  const shuffle = (arr) => {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  };
-
   let deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || DEFAULT_DECK;
-  let queue = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'queue') || 'null') || shuffle(deck.map(d => d.id));
-  let idx = parseInt(localStorage.getItem(STORAGE_PREFIX + 'idx') || '0', 10);
+  let currentId = localStorage.getItem(STORAGE_PREFIX + 'currentId');
   let flipped = false;
   let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
     totalCorrect: 0,
@@ -67,15 +57,15 @@
 
   function persist() {
     localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(deck));
-    localStorage.setItem(STORAGE_PREFIX + 'queue', JSON.stringify(queue));
-    localStorage.setItem(STORAGE_PREFIX + 'idx', String(idx));
+    if (currentId) localStorage.setItem(STORAGE_PREFIX + 'currentId', currentId);
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
   }
-  function current() { return deck.find(d => d.id === queue[idx]) || deck[0]; }
+  function current() { return deck.find(d => d.id === currentId) || deck[0]; }
 
   const cardFront = el('cardFront');
   const cardBack  = el('cardBack');
   const progressInner = el('progressInner');
+  const forecastInner = el('forecastInner');
   const correctCount = el('correctCount');
   const wrongCount = el('wrongCount');
   const accuracy = el('accuracy');
@@ -96,6 +86,26 @@
       plugins: { legend: { display: false } }
     }
   });
+
+  function weight(id) {
+    const pc = stats.perCard[id] || {correct:0, wrong:0};
+    return Math.max(1, 1 + pc.wrong - pc.correct);
+  }
+
+  function pickNext(excludeId) {
+    const weights = deck.map(d => ({ id: d.id, w: weight(d.id) }));
+    if (excludeId && deck.length > 1) {
+      weights.forEach(w => { if (w.id === excludeId) w.w = 0; });
+    }
+    const total = weights.reduce((s, w) => s + w.w, 0);
+    let r = Math.random() * total;
+    for (const w of weights) {
+      if (w.w === 0) continue;
+      r -= w.w;
+      if (r <= 0) return w.id;
+    }
+    return weights.find(w => w.w > 0).id;
+  }
 
   function fourierForecast(points, steps) {
     const n = points.length;
@@ -173,8 +183,10 @@
         futureLower.push({ x: time, y: clamp(y - trend.moe, 0, 100) });
       });
     }
-    const predicted = futurePoints.length ? futurePoints[0].y : (progressPoints.length ? progressPoints[progressPoints.length - 1].y : 0);
-    progressInner.style.width = predicted + '%';
+    const learned = progressPoints.length ? progressPoints[progressPoints.length - 1].y : 0;
+    const predicted = futurePoints.length ? futurePoints[0].y : learned;
+    progressInner.style.width = learned + '%';
+    forecastInner.style.width = predicted + '%';
     cardProgressChart.data.datasets[0].data = progressPoints;
     cardProgressChart.data.datasets[1].data = futurePoints;
     cardProgressChart.data.datasets[2].data = futureUpper;
@@ -199,15 +211,6 @@
     persist();
   }
 
-  function requeue(result) {
-    const curId = queue[idx];
-    queue.splice(idx, 1);
-    const insertAt = result === 'wrong' ? clamp(idx + 3, 0, queue.length) : queue.length;
-    queue.splice(insertAt, 0, curId);
-    if (idx >= queue.length) idx = 0;
-    flipped = false;
-  }
-
   function record(result) {
     const id = current().id;
     const pc = stats.perCard[id] || {correct:0, wrong:0, attempts:[]};
@@ -217,20 +220,16 @@
     (pc.attempts || (pc.attempts = [])).push({ t: now, result });
     stats.perCard[id] = pc;
     (stats.attempts || (stats.attempts = [])).push({ t: now, result });
-    requeue(result);
+    currentId = pickNext(id);
+    flipped = false;
     render();
   }
-
-  el('shuffleBtn').addEventListener('click', () => {
-    queue = shuffle(deck.map(d => d.id));
-    idx = 0; flipped = false; render();
-  });
   el('resetBtn').addEventListener('click', () => {
     stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1, attempts: [] };
-    queue = shuffle(deck.map(d => d.id));
-    idx = 0; flipped = false; render();
+    currentId = pickNext();
+    flipped = false; render();
   });
-  el('skipBtn').addEventListener('click', () => { idx = (idx + 1) % queue.length; flipped = false; render(); });
+  el('skipBtn').addEventListener('click', () => { currentId = pickNext(currentId); flipped = false; render(); });
   el('wrongBtn').addEventListener('click', () => record('wrong'));
   el('correctBtn').addEventListener('click', () => record('correct'));
 
@@ -254,9 +253,8 @@
       if (!Array.isArray(parsed)) throw new Error('Deck must be an array');
       parsed.forEach((d,i)=>{ if(!d.id||!d.glyph||!d.name) throw new Error('Missing fields at index '+i); });
       deck = parsed.map(d=>({ id: String(d.id), glyph: String(d.glyph), name: String(d.name), ipa: d.ipa?String(d.ipa):'' }));
-      const ids = deck.map(d=>d.id);
-      queue = shuffle(ids);
-      idx = 0; flipped = false;
+      currentId = pickNext();
+      flipped = false;
       render();
       deckDialog.close();
     } catch (e) {
@@ -267,5 +265,6 @@
     deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
 
+  if (!currentId) currentId = pickNext();
   render();
 })();
