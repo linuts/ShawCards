@@ -22,6 +22,12 @@ var statsHTML string
 //go:embed stats.js
 var statsJS string
 
+//go:embed cheatsheet.html
+var cheatHTML string
+
+//go:embed cheatsheet.js
+var cheatJS string
+
 func main() {
 	mux := http.NewServeMux()
 
@@ -53,6 +59,18 @@ func main() {
 	mux.HandleFunc("/stats.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 		fmt.Fprint(w, statsJS)
+	})
+
+	// Serve cheatsheet.html
+	mux.HandleFunc("/cheatsheet", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, cheatHTML)
+	})
+
+	// Serve cheatsheet.js
+	mux.HandleFunc("/cheatsheet.js", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+		fmt.Fprint(w, cheatJS)
 	})
 
 	addr := ":8080"

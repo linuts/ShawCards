@@ -40,3 +40,7 @@ button.primary{ background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
 .stats-page{ max-width:900px; margin:0 auto; padding:16px; }
 .chart-wrap{ max-width:100%; }
 @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } #cardFront{ font-size:72px; } }
+
+.keyboard{ display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+.keyboard button{ width:40px; height:40px; font-size:24px; padding:0; }
+#spellInput{ width:100%; margin-top:8px; font-size:24px; padding:8px; border:1px solid var(--line); border-radius:12px; }
