@@ -2,20 +2,36 @@
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
 
-  const body = document.getElementById('cheatBody');
-  deck.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="glyph">${d.glyph}</td><td>${d.name}</td><td>${d.ipa || ''}</td><td>${d.type || ''}</td>`;
-    body.appendChild(tr);
+  const tall = deck.filter(d => d.type && d.type.startsWith('Tall'));
+  const deep = deck.filter(d => d.type && d.type.startsWith('Deep'));
+  const short = deck.filter(d => d.type && d.type.startsWith('Short'));
+
+  const letterGrid = document.getElementById('letterGrid');
+  [tall, deep, short].forEach(row => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'letter-row';
+    row.forEach(d => {
+      const cell = document.createElement('div');
+      cell.className = 'letter-cell';
+      cell.innerHTML = `<div class="glyph">${d.glyph}</div><div class="name">${d.name}</div>`;
+      if (d.ipa) cell.title = d.ipa;
+      rowDiv.appendChild(cell);
+    });
+    letterGrid.appendChild(rowDiv);
   });
 
   const input = document.getElementById('spellInput');
   const keyboard = document.getElementById('keyboard');
-  deck.forEach(d => {
-    const btn = document.createElement('button');
-    btn.textContent = d.glyph;
-    btn.addEventListener('click', () => { input.value += d.glyph; });
-    keyboard.appendChild(btn);
+  [tall, deep, short].forEach(row => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'keyboard-row';
+    row.forEach(d => {
+      const btn = document.createElement('button');
+      btn.textContent = d.glyph;
+      btn.addEventListener('click', () => { input.value += d.glyph; });
+      rowDiv.appendChild(btn);
+    });
+    keyboard.appendChild(rowDiv);
   });
 
   document.getElementById('clearBtn').addEventListener('click', () => { input.value = ''; });
