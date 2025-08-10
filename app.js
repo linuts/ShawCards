@@ -182,9 +182,13 @@
         futureUpper.push({ x: time, y: clamp(y + trend.moe, 0, 100) });
         futureLower.push({ x: time, y: clamp(y - trend.moe, 0, 100) });
       });
+      const lastPoint = progressPoints[progressPoints.length - 1];
+      futurePoints.unshift(lastPoint);
+      futureUpper.unshift({ x: lastPoint.x, y: clamp(lastPoint.y + trend.moe, 0, 100) });
+      futureLower.unshift({ x: lastPoint.x, y: clamp(lastPoint.y - trend.moe, 0, 100) });
     }
     const learned = progressPoints.length ? progressPoints[progressPoints.length - 1].y : 0;
-    const predicted = futurePoints.length ? futurePoints[0].y : learned;
+    const predicted = futurePoints.length > 1 ? futurePoints[1].y : learned;
     progressInner.style.width = learned + '%';
     forecastInner.style.width = predicted + '%';
     cardProgressChart.data.datasets[0].data = progressPoints;
