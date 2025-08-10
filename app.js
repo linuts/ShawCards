@@ -62,6 +62,7 @@
     totalWrong: 0,
     perCard: {},
     sessions: 1,
+    attempts: [],
   };
 
   function persist() {
@@ -124,6 +125,7 @@
     if (result === 'correct') { pc.correct++; stats.totalCorrect++; }
     else { pc.wrong++; stats.totalWrong++; }
     stats.perCard[id] = pc;
+    (stats.attempts || (stats.attempts = [])).push({ t: Date.now(), result });
     requeue(result);
     render();
   }
@@ -133,7 +135,7 @@
     idx = 0; flipped = false; render();
   });
   el('resetBtn').addEventListener('click', () => {
-    stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1 };
+    stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1, attempts: [] };
     queue = shuffle(deck.map(d => d.id));
     idx = 0; flipped = false; render();
   });
