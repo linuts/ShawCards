@@ -1,7 +1,15 @@
 (() => {
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
-  const deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
+  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
+  const ORDER = [
+    'peep','bib','tot','dead','kick','gag','fee','vow','thigh','they','so','zoo',
+    'sure','measure','church','judge','yea','woe','hung','haha','loll','roar','mime',
+    'nun','if','eat','egg','age','ash','ice','ado','up','on','oak','wool','ooze',
+    'out','oil','ah','awe','are','or','air','err','array','ear','ian','yew'
+  ];
+  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
+  const deck = ORDER.map(id => deckMap.get(id)).filter(Boolean);
 
   document.getElementById('totalSessions').textContent = stats.sessions || 1;
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
@@ -88,8 +96,8 @@
     const pcRaw = (stats.perCard && stats.perCard[d.id]) || {};
     const correct = pcRaw.correct || 0;
     const wrong = pcRaw.wrong || 0;
-    return { glyph: d.glyph, correct, wrong, diff: correct - wrong };
-  }).sort((a, b) => b.diff - a.diff);
+    return { glyph: d.glyph, correct, wrong };
+  });
 
   const labels = perCardStats.map(p => p.glyph);
   const correct = perCardStats.map(p => p.correct);

@@ -1,15 +1,17 @@
 (() => {
   const STORAGE_PREFIX = 'shavian_go_v1_';
-  const deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
-
-  const extra = {
-    oil: { id: 'oil', glyph: '𐑶', name: 'Oil' },
-    ah:  { id: 'ah',  glyph: '𐑭', name: 'Ah' },
-    awe: { id: 'awe', glyph: '𐑷', name: 'Awe' }
-  };
+  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
+  const ORDER = [
+    'peep','bib','tot','dead','kick','gag','fee','vow','thigh','they','so','zoo',
+    'sure','measure','church','judge','yea','woe','hung','haha','loll','roar','mime',
+    'nun','if','eat','egg','age','ash','ice','ado','up','on','oak','wool','ooze',
+    'out','oil','ah','awe','are','or','air','err','array','ear','ian','yew'
+  ];
+  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
+  const deck = ORDER.map(id => deckMap.get(id)).filter(Boolean);
 
   function get(id) {
-    return deck.find(d => d.id === id) || extra[id];
+    return deck.find(d => d.id === id) || { glyph: id, name: id };
   }
 
   function makeCell(letter) {
@@ -31,12 +33,7 @@
     ['out', 'oil'], ['ah', 'awe']
   ];
 
-  const compounds = [
-    { glyph: '𐑸', name: 'Are' }, { glyph: '𐑹', name: 'Or' },
-    { glyph: '𐑺', name: 'Air' }, { glyph: '𐑻', name: 'Err' },
-    { glyph: '𐑼', name: 'Array' }, { glyph: '𐑽', name: 'Ear' },
-    { glyph: '𐑾', name: 'Ian' }, { glyph: '𐑿', name: 'Yew' }
-  ];
+  const compounds = ['are','or','air','err','array','ear','ian','yew'];
 
   function buildPairs(id, pairs) {
     const grid = document.getElementById(id);
@@ -53,12 +50,11 @@
   buildPairs('shortGrid', shortPairs);
 
   const compoundGrid = document.getElementById('compoundGrid');
-  compounds.forEach(c => { compoundGrid.appendChild(makeCell(c)); });
+  compounds.forEach(id => { compoundGrid.appendChild(makeCell(get(id))); });
 
   const input = document.getElementById('spellInput');
   const keyboard = document.getElementById('keyboard');
-  const keyboardLetters = deck.concat(Object.values(extra)).concat(compounds);
-  keyboardLetters.forEach(d => {
+  deck.forEach(d => {
     const btn = document.createElement('button');
     btn.textContent = d.glyph;
     btn.addEventListener('click', () => { input.value += d.glyph; });

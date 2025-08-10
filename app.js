@@ -1,30 +1,26 @@
 (() => {
   const DEFAULT_DECK = [
-    // Tall Letters
+    // Shavian letters in alphabetical order
     { id: "peep", glyph: "𐑐", name: "(P)eep", ipa: "/p/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "tot", glyph: "𐑑", name: "(T)ot", ipa: "/t/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "kick", glyph: "𐑒", name: "(K)ick", ipa: "/k/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "fee", glyph: "𐑓", name: "(F)ee", ipa: "/f/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "thigh", glyph: "𐑔", name: "(TH)igh", ipa: "/θ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "so", glyph: "𐑕", name: "(S)o", ipa: "/s/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "sure", glyph: "𐑖", name: "(SH)ure", ipa: "/ʃ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "church", glyph: "𐑗", name: "(CH)urch", ipa: "/t͡ʃ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "yea", glyph: "𐑘", name: "(Y)ea", ipa: "/j/", type: "Tall Letter - Approximant" },
-    { id: "hung", glyph: "𐑙", name: "hu(NG)", ipa: "/ŋ/", type: "Tall Letter - Nasal" },
-
-    // Deep Letters
     { id: "bib", glyph: "𐑚", name: "(B)ib", ipa: "/b/", type: "Deep Letter - Voiced Consonant" },
+    { id: "tot", glyph: "𐑑", name: "(T)ot", ipa: "/t/", type: "Tall Letter - Voiceless Consonant" },
     { id: "dead", glyph: "𐑛", name: "(D)ead", ipa: "/d/", type: "Deep Letter - Voiced Consonant" },
+    { id: "kick", glyph: "𐑒", name: "(K)ick", ipa: "/k/", type: "Tall Letter - Voiceless Consonant" },
     { id: "gag", glyph: "𐑜", name: "(G)ag", ipa: "/ɡ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "fee", glyph: "𐑓", name: "(F)ee", ipa: "/f/", type: "Tall Letter - Voiceless Consonant" },
     { id: "vow", glyph: "𐑝", name: "(V)ow", ipa: "/v/", type: "Deep Letter - Voiced Consonant" },
+    { id: "thigh", glyph: "𐑔", name: "(TH)igh", ipa: "/θ/", type: "Tall Letter - Voiceless Consonant" },
     { id: "they", glyph: "𐑞", name: "(TH)ey", ipa: "/ð/", type: "Deep Letter - Voiced Consonant" },
+    { id: "so", glyph: "𐑕", name: "(S)o", ipa: "/s/", type: "Tall Letter - Voiceless Consonant" },
     { id: "zoo", glyph: "𐑟", name: "(Z)oo", ipa: "/z/", type: "Deep Letter - Voiced Consonant" },
+    { id: "sure", glyph: "𐑖", name: "(SH)ure", ipa: "/ʃ/", type: "Tall Letter - Voiceless Consonant" },
     { id: "measure", glyph: "𐑠", name: "mea(S)ure", ipa: "/ʒ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "church", glyph: "𐑗", name: "(CH)urch", ipa: "/t͡ʃ/", type: "Tall Letter - Voiceless Consonant" },
     { id: "judge", glyph: "𐑡", name: "(J)udge", ipa: "/d͡ʒ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "yea", glyph: "𐑘", name: "(Y)ea", ipa: "/j/", type: "Tall Letter - Approximant" },
     { id: "woe", glyph: "𐑢", name: "(W)oe", ipa: "/w/", type: "Deep Letter - Approximant" },
+    { id: "hung", glyph: "𐑙", name: "hu(NG)", ipa: "/ŋ/", type: "Tall Letter - Nasal" },
     { id: "haha", glyph: "𐑣", name: "(H)aha", ipa: "/h/", type: "Deep Letter - Voiceless Consonant" },
-
-    // Short Letters
     { id: "loll", glyph: "𐑤", name: "(L)oll", ipa: "/l/", type: "Short Letter - Liquid" },
     { id: "roar", glyph: "𐑮", name: "(R)oar", ipa: "/ɹ/", type: "Short Letter - Liquid" },
     { id: "mime", glyph: "𐑥", name: "(M)ime", ipa: "/m/", type: "Short Letter - Nasal" },
@@ -41,14 +37,27 @@
     { id: "oak", glyph: "𐑴", name: "(O)ak", ipa: "/oʊ/", type: "Short Letter - Vowel" },
     { id: "wool", glyph: "𐑫", name: "w(OO)l", ipa: "/ʊ/", type: "Short Letter - Vowel" },
     { id: "ooze", glyph: "𐑵", name: "(OO)ze", ipa: "/uː/", type: "Short Letter - Vowel" },
-    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" }
+    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" },
+    { id: "oil", glyph: "𐑶", name: "Oil", ipa: "/ɔɪ/", type: "Short Letter - Vowel" },
+    { id: "ah", glyph: "𐑭", name: "Ah", ipa: "/ɑː/", type: "Short Letter - Vowel" },
+    { id: "awe", glyph: "𐑷", name: "Awe", ipa: "/ɔː/", type: "Short Letter - Vowel" },
+    { id: "are", glyph: "𐑸", name: "Are", ipa: "/ɑr/", type: "Compound Vowel" },
+    { id: "or", glyph: "𐑹", name: "Or", ipa: "/ɔr/", type: "Compound Vowel" },
+    { id: "air", glyph: "𐑺", name: "Air", ipa: "/ɛr/", type: "Compound Vowel" },
+    { id: "err", glyph: "𐑻", name: "Err", ipa: "/ɜr/", type: "Compound Vowel" },
+    { id: "array", glyph: "𐑼", name: "Array", ipa: "/ər/", type: "Compound Vowel" },
+    { id: "ear", glyph: "𐑽", name: "Ear", ipa: "/ɪr/", type: "Compound Vowel" },
+    { id: "ian", glyph: "𐑾", name: "Ian", ipa: "/aɪr/", type: "Compound Vowel" },
+    { id: "yew", glyph: "𐑿", name: "Yew", ipa: "/juː/", type: "Compound Vowel" }
   ];
 
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const el = (id) => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
-  let deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || DEFAULT_DECK;
-  let currentId = localStorage.getItem(STORAGE_PREFIX + 'currentId');
+  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || [];
+  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
+  let deck = DEFAULT_DECK.map(d => deckMap.get(d.id) || d);
+  let currentId = deck[0].id;
   let flipped = false;
   let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
     totalCorrect: 0,
@@ -60,7 +69,6 @@
 
   function persist() {
     localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(deck));
-    if (currentId) localStorage.setItem(STORAGE_PREFIX + 'currentId', currentId);
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
@@ -90,24 +98,41 @@
     }
   });
 
-  function weight(id) {
-    const pc = stats.perCard[id] || {correct:0, wrong:0};
-    return Math.max(1, 1 + pc.wrong - pc.correct);
+  function nextId(id) {
+    const idx = deck.findIndex(d => d.id === id);
+    return deck[(idx + 1) % deck.length].id;
   }
 
-  function pickNext(excludeId) {
-    const weights = deck.map(d => ({ id: d.id, w: weight(d.id) }));
-    if (excludeId && deck.length > 1) {
-      weights.forEach(w => { if (w.id === excludeId) w.w = 0; });
+  function selectNext() {
+    const allAttempted = deck.every(d => {
+      const pc = stats.perCard[d.id];
+      return pc && (pc.correct + pc.wrong) > 0;
+    });
+    if (!allAttempted) {
+      const idx = deck.findIndex(d => d.id === currentId);
+      for (let i = 1; i <= deck.length; i++) {
+        const next = deck[(idx + i) % deck.length];
+        const pc = stats.perCard[next.id];
+        if (!pc || (pc.correct + pc.wrong) === 0) return next.id;
+      }
+      return deck[(idx + 1) % deck.length].id;
     }
-    const total = weights.reduce((s, w) => s + w.w, 0);
+    const weights = deck.map(d => {
+      const pc = stats.perCard[d.id] || { correct: 0, wrong: 0 };
+      return (pc.wrong + 1) / (pc.correct + 1);
+    });
+    const maxW = Math.max(...weights);
+    const minW = Math.min(...weights);
+    if (Math.abs(maxW - minW) < 1e-9) {
+      return nextId(currentId);
+    }
+    const total = weights.reduce((a, b) => a + b, 0);
     let r = Math.random() * total;
-    for (const w of weights) {
-      if (w.w === 0) continue;
-      r -= w.w;
-      if (r <= 0) return w.id;
+    for (let i = 0; i < deck.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return deck[i].id;
     }
-    return weights.find(w => w.w > 0).id;
+    return deck[deck.length - 1].id;
   }
 
   function fourierForecast(points, steps) {
@@ -227,17 +252,17 @@
     (pc.attempts || (pc.attempts = [])).push({ t: now, result });
     stats.perCard[id] = pc;
     (stats.attempts || (stats.attempts = [])).push({ t: now, result });
-    currentId = pickNext(id);
+    currentId = selectNext();
     flipped = false;
     render();
   }
   el('resetBtn').addEventListener('click', () => {
     stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1, attempts: [] };
-    currentId = pickNext();
+    currentId = deck[0].id;
     flipped = false; render();
   });
   function skip() {
-    currentId = pickNext(currentId);
+    currentId = selectNext();
     flipped = false;
     render();
   }
@@ -266,7 +291,7 @@
       if (!Array.isArray(parsed)) throw new Error('Deck must be an array');
       parsed.forEach((d,i)=>{ if(!d.id||!d.glyph||!d.name) throw new Error('Missing fields at index '+i); });
       deck = parsed.map(d=>({ id: String(d.id), glyph: String(d.glyph), name: String(d.name), ipa: d.ipa?String(d.ipa):'' }));
-      currentId = pickNext();
+      currentId = deck[0] ? deck[0].id : null;
       flipped = false;
       render();
       deckDialog.close();
@@ -278,6 +303,6 @@
     deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
 
-  if (!currentId) currentId = pickNext();
+  currentId = deck[0].id;
   render();
 })();
