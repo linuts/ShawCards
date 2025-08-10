@@ -49,7 +49,7 @@
   const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || [];
   const deckMap = new Map(storedDeck.map(d => [d.id, d]));
   let deck = DEFAULT_DECK.map(d => deckMap.get(d.id) || d);
-  let currentId = localStorage.getItem(STORAGE_PREFIX + 'currentId');
+  let currentId = deck[0].id;
   let flipped = false;
   let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
     totalCorrect: 0,
@@ -61,7 +61,6 @@
 
   function persist() {
     localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(deck));
-    if (currentId) localStorage.setItem(STORAGE_PREFIX + 'currentId', currentId);
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
@@ -91,24 +90,9 @@
     }
   });
 
-  function weight(id) {
-    const pc = stats.perCard[id] || {correct:0, wrong:0};
-    return Math.max(1, 1 + pc.wrong - pc.correct);
-  }
-
-  function pickNext(excludeId) {
-    const weights = deck.map(d => ({ id: d.id, w: weight(d.id) }));
-    if (excludeId && deck.length > 1) {
-      weights.forEach(w => { if (w.id === excludeId) w.w = 0; });
-    }
-    const total = weights.reduce((s, w) => s + w.w, 0);
-    let r = Math.random() * total;
-    for (const w of weights) {
-      if (w.w === 0) continue;
-      r -= w.w;
-      if (r <= 0) return w.id;
-    }
-    return weights.find(w => w.w > 0).id;
+  function nextId(id) {
+    const idx = deck.findIndex(d => d.id === id);
+    return deck[(idx + 1) % deck.length].id;
   }
 
   function fourierForecast(points, steps) {
@@ -228,7 +212,7 @@
     (pc.attempts || (pc.attempts = [])).push({ t: now, result });
     stats.perCard[id] = pc;
     (stats.attempts || (stats.attempts = [])).push({ t: now, result });
-    currentId = pickNext(id);
+    currentId = nextId(id);
     flipped = false;
     render();
   }
@@ -238,7 +222,7 @@
     flipped = false; render();
   });
   function skip() {
-    currentId = pickNext(currentId);
+    currentId = nextId(currentId);
     flipped = false;
     render();
   }
@@ -279,6 +263,6 @@
     deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
 
-  if (!currentId || !deck.find(d => d.id === currentId)) currentId = deck[0].id;
+  currentId = deck[0].id;
   render();
 })();
