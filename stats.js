@@ -22,7 +22,7 @@
 
   function regression(points) {
     const n = points.length;
-    if (n === 0) return { m: 0, b: 0 };
+    if (n === 0) return { m: 0, b: 0, moe: 0 };
     let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
     points.forEach((p, i) => {
       sumX += i; sumY += p.y; sumXY += i * p.y; sumXX += i * i;
@@ -30,11 +30,15 @@
     const denom = n * sumXX - sumX * sumX;
     const m = denom ? (n * sumXY - sumX * sumY) / denom : 0;
     const b = (sumY - m * sumX) / n;
-    return { m, b };
+    let sse = 0;
+    points.forEach((p, i) => { const yHat = m * i + b; sse += (p.y - yHat) * (p.y - yHat); });
+    const stderr = Math.sqrt(sse / Math.max(n - 2, 1));
+    const moe = 1.96 * stderr;
+    return { m, b, moe };
   }
 
   const trend = regression(progressPoints);
-  const futurePoints = [];
+  const futurePoints = [], futureUpper = [], futureLower = [];
   if (progressPoints.length) {
     const lastTime = attempts.length ? attempts[attempts.length - 1].t : Date.now();
     const avgInterval = attempts.length > 1 ?
@@ -45,6 +49,8 @@
       const time = new Date(lastTime + avgInterval * i);
       const y = clamp(trend.m * idx + trend.b, 0, 100);
       futurePoints.push({ x: time, y });
+      futureUpper.push({ x: time, y: clamp(y + trend.moe, 0, 100) });
+      futureLower.push({ x: time, y: clamp(y - trend.moe, 0, 100) });
     }
   }
 
@@ -64,8 +70,10 @@
     type: 'line',
     data: {
       datasets: [
-        { label: '% Learned', data: progressPoints, borderColor: 'rgba(59,130,246,0.8)', fill: false },
-        { label: 'Trend', data: futurePoints, borderColor: 'rgba(16,185,129,0.6)', borderDash: [5,5], fill: false }
+        { label: '% Learned', data: progressPoints, borderColor: 'rgba(16,185,129,0.8)', fill: false },
+        { label: `Trend (±${trend.moe.toFixed(1)}%)`, data: futurePoints, borderColor: 'rgba(59,130,246,0.8)', fill: false },
+        { label: 'Trend Upper', data: futureUpper, borderColor: 'rgba(59,130,246,0.3)', borderDash: [5,5], fill: false, pointRadius: 0 },
+        { label: 'Trend Lower', data: futureLower, borderColor: 'rgba(59,130,246,0.3)', borderDash: [5,5], fill: false, pointRadius: 0 }
       ]
     },
     options: {

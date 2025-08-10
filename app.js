@@ -76,6 +76,7 @@
   const cardFront = el('cardFront');
   const cardBack  = el('cardBack');
   const progressInner = el('progressInner');
+  const progressTrend = el('progressTrend');
   const correctCount = el('correctCount');
   const wrongCount = el('wrongCount');
   const accuracy = el('accuracy');
@@ -89,8 +90,30 @@
     cardFront.classList.toggle('show', !flipped);
     cardBack.classList.toggle('show', flipped);
 
-    const pct = Math.round(((idx + 1) / queue.length) * 100);
+    const { pct, trendPct } = (function() {
+      const attempts = stats.attempts || [];
+      const alpha = 0.3;
+      let ema = 0;
+      const points = attempts.map((a, i) => {
+        const val = a.result === 'correct' ? 1 : 0;
+        ema = i === 0 ? val : alpha * val + (1 - alpha) * ema;
+        return { i, y: ema * 100 };
+      });
+      const currentPct = points.length ? points[points.length - 1].y : 0;
+      let predicted = currentPct;
+      const n = points.length;
+      if (n >= 2) {
+        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+        points.forEach(p => { sumX += p.i; sumY += p.y; sumXY += p.i * p.y; sumXX += p.i * p.i; });
+        const denom = n * sumXX - sumX * sumX;
+        const m = denom ? (n * sumXY - sumX * sumY) / denom : 0;
+        const b = (sumY - m * sumX) / n;
+        predicted = clamp(m * n + b, 0, 100);
+      }
+      return { pct: Math.round(currentPct), trendPct: Math.round(predicted) };
+    })();
     progressInner.style.width = pct + '%';
+    progressTrend.style.width = trendPct + '%';
 
     correctCount.textContent = stats.totalCorrect;
     wrongCount.textContent = stats.totalWrong;
