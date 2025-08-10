@@ -184,8 +184,8 @@
       });
       const lastPoint = progressPoints[progressPoints.length - 1];
       futurePoints.unshift(lastPoint);
-      futureUpper.unshift({ x: lastPoint.x, y: clamp(lastPoint.y + trend.moe, 0, 100) });
-      futureLower.unshift({ x: lastPoint.x, y: clamp(lastPoint.y - trend.moe, 0, 100) });
+      futureUpper.unshift({ x: lastPoint.x, y: lastPoint.y });
+      futureLower.unshift({ x: lastPoint.x, y: lastPoint.y });
     }
     const learned = progressPoints.length ? progressPoints[progressPoints.length - 1].y : 0;
     const predicted = futurePoints.length > 1 ? futurePoints[1].y : learned;
