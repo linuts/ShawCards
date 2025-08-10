@@ -2,16 +2,63 @@
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
 
-  const body = document.getElementById('cheatBody');
-  deck.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="glyph">${d.glyph}</td><td>${d.name}</td><td>${d.ipa || ''}</td><td>${d.type || ''}</td>`;
-    body.appendChild(tr);
-  });
+  const extra = {
+    oil: { id: 'oil', glyph: '𐑶', name: 'Oil' },
+    ah:  { id: 'ah',  glyph: '𐑭', name: 'Ah' },
+    awe: { id: 'awe', glyph: '𐑷', name: 'Awe' }
+  };
+
+  function get(id) {
+    return deck.find(d => d.id === id) || extra[id];
+  }
+
+  function makeCell(letter) {
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.innerHTML = `<div class="glyph">${letter.glyph}</div><div class="name">${letter.name}</div>`;
+    return div;
+  }
+
+  const tallDeepPairs = [
+    ['peep', 'bib'], ['tot', 'dead'], ['kick', 'gag'], ['fee', 'vow'],
+    ['thigh', 'they'], ['so', 'zoo'], ['sure', 'measure'], ['church', 'judge'],
+    ['yea', 'woe'], ['hung', 'haha']
+  ];
+
+  const shortPairs = [
+    ['loll', 'roar'], ['mime', 'nun'], ['if', 'eat'], ['egg', 'age'],
+    ['ash', 'ice'], ['ado', 'up'], ['on', 'oak'], ['wool', 'ooze'],
+    ['out', 'oil'], ['ah', 'awe']
+  ];
+
+  const compounds = [
+    { glyph: '𐑸', name: 'Are' }, { glyph: '𐑹', name: 'Or' },
+    { glyph: '𐑺', name: 'Air' }, { glyph: '𐑻', name: 'Err' },
+    { glyph: '𐑼', name: 'Array' }, { glyph: '𐑽', name: 'Ear' },
+    { glyph: '𐑾', name: 'Ian' }, { glyph: '𐑿', name: 'Yew' }
+  ];
+
+  function buildPairs(id, pairs) {
+    const grid = document.getElementById(id);
+    pairs.forEach(([a, b]) => {
+      const div = document.createElement('div');
+      div.className = 'pair';
+      div.appendChild(makeCell(get(a)));
+      div.appendChild(makeCell(get(b)));
+      grid.appendChild(div);
+    });
+  }
+
+  buildPairs('tallDeepGrid', tallDeepPairs);
+  buildPairs('shortGrid', shortPairs);
+
+  const compoundGrid = document.getElementById('compoundGrid');
+  compounds.forEach(c => { compoundGrid.appendChild(makeCell(c)); });
 
   const input = document.getElementById('spellInput');
   const keyboard = document.getElementById('keyboard');
-  deck.forEach(d => {
+  const keyboardLetters = deck.concat(Object.values(extra)).concat(compounds);
+  keyboardLetters.forEach(d => {
     const btn = document.createElement('button');
     btn.textContent = d.glyph;
     btn.addEventListener('click', () => { input.value += d.glyph; });

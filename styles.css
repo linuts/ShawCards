@@ -46,3 +46,25 @@ button.primary{ background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
 .keyboard{ display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
 .keyboard button{ width:40px; height:40px; font-size:24px; padding:0; }
 #spellInput{ width:100%; margin-top:8px; font-size:24px; padding:8px; border:1px solid var(--line); border-radius:12px; }
+
+.pair-grid,
+.single-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  flex: 1 0 160px;
+}
+
+.single-grid .cell {
+  flex: 1 0 80px;
+}
+.cell{ text-align:center; }
+.cell .glyph{ font-size:32px; }
+.cell .name{ font-size:12px; color:var(--muted); }
