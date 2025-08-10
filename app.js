@@ -46,7 +46,9 @@
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const el = (id) => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
-  let deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || DEFAULT_DECK;
+  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || [];
+  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
+  let deck = DEFAULT_DECK.map(d => deckMap.get(d.id) || d);
   let currentId = localStorage.getItem(STORAGE_PREFIX + 'currentId');
   let flipped = false;
   let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
@@ -232,7 +234,7 @@
   }
   el('resetBtn').addEventListener('click', () => {
     stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1, attempts: [] };
-    currentId = pickNext();
+    currentId = deck[0].id;
     flipped = false; render();
   });
   function skip() {
@@ -265,7 +267,7 @@
       if (!Array.isArray(parsed)) throw new Error('Deck must be an array');
       parsed.forEach((d,i)=>{ if(!d.id||!d.glyph||!d.name) throw new Error('Missing fields at index '+i); });
       deck = parsed.map(d=>({ id: String(d.id), glyph: String(d.glyph), name: String(d.name), ipa: d.ipa?String(d.ipa):'' }));
-      currentId = pickNext();
+      currentId = deck[0] ? deck[0].id : null;
       flipped = false;
       render();
       deckDialog.close();
@@ -277,6 +279,6 @@
     deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
 
-  if (!currentId) currentId = pickNext();
+  if (!currentId || !deck.find(d => d.id === currentId)) currentId = deck[0].id;
   render();
 })();
