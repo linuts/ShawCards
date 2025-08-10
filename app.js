@@ -1,44 +1,47 @@
 (() => {
   const DEFAULT_DECK = [
-    { id: "peep", glyph: "𐑐", name: "peep", ipa: "/p/" },
-    { id: "bab", glyph: "𐑚", name: "bab", ipa: "/b/" },
-    { id: "tot", glyph: "𐑑", name: "tot", ipa: "/t/" },
-    { id: "dead", glyph: "𐑛", name: "dead", ipa: "/d/" },
-    { id: "kick", glyph: "𐑒", name: "kick", ipa: "/k/" },
-    { id: "gag", glyph: "𐑜", name: "gag", ipa: "/ɡ/" },
-    { id: "fee", glyph: "𐑓", name: "fee", ipa: "/f/" },
-    { id: "vow", glyph: "𐑝", name: "vow", ipa: "/v/" },
-    { id: "thigh", glyph: "𐑔", name: "thigh", ipa: "/θ/" },
-    { id: "they", glyph: "𐑞", name: "they", ipa: "/ð/" },
-    { id: "so", glyph: "𐑕", name: "so", ipa: "/s/" },
-    { id: "zoo", glyph: "𐑟", name: "zoo", ipa: "/z/" },
-    { id: "shy", glyph: "𐑖", name: "shy", ipa: "/ʃ/" },
-    { id: "azure", glyph: "𐑠", name: "azure", ipa: "/ʒ/" },
-    { id: "church", glyph: "𐑗", name: "church", ipa: "/t͡ʃ/" },
-    { id: "judge", glyph: "𐑡", name: "judge", ipa: "/d͡ʒ/" },
-    { id: "yea", glyph: "𐑘", name: "yea", ipa: "/j/" },
-    { id: "woe", glyph: "𐑢", name: "woe", ipa: "/w/" },
-    { id: "hung", glyph: "𐑙", name: "hung", ipa: "/ŋ/" },
-    { id: "ha-ha", glyph: "𐑣", name: "ha-ha", ipa: "/h/" },
-    { id: "lol", glyph: "𐑤", name: "lol", ipa: "/l/" },
-    { id: "roar", glyph: "𐑮", name: "roar", ipa: "/ɹ/" },
-    { id: "mime", glyph: "𐑥", name: "mime", ipa: "/m/" },
-    { id: "nun", glyph: "𐑯", name: "nun", ipa: "/n/" },
-    { id: "egg", glyph: "𐑧", name: "egg", ipa: "/ɛ/" },
-    { id: "ash", glyph: "𐑨", name: "ash", ipa: "/æ/" },
-    { id: "odd", glyph: "𐑪", name: "odd", ipa: "/ɒ~ɑ/" },
-    { id: "up", glyph: "𐑳", name: "up", ipa: "/ʌ/" },
-    { id: "ado", glyph: "𐑩", name: "ado", ipa: "/ə/" },
-    { id: "eat", glyph: "𐑰", name: "eat", ipa: "/iː/" },
-    { id: "if", glyph: "𐑦", name: "if", ipa: "/ɪ/" },
-    { id: "ooze", glyph: "𐑵", name: "ooze", ipa: "/uː/" },
-    { id: "wool", glyph: "𐑬", name: "wool", ipa: "/ʊ/" },
-    { id: "age", glyph: "𐑱", name: "age", ipa: "/eɪ/" },
-    { id: "ice", glyph: "𐑲", name: "ice", ipa: "/aɪ/" },
-    { id: "oak", glyph: "𐑴", name: "oak", ipa: "/oʊ/" },
-    { id: "awe", glyph: "𐑷", name: "awe", ipa: "/ɔː/" },
-    { id: "out", glyph: "𐑿", name: "out", ipa: "/aʊ/" },
-    { id: "oil", glyph: "𐑶", name: "oil", ipa: "/ɔɪ/" }
+    // Tall Letters
+    { id: "peep", glyph: "𐑐", name: "(P)eep", ipa: "/p/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "tot", glyph: "𐑑", name: "(T)ot", ipa: "/t/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "kick", glyph: "𐑒", name: "(K)ick", ipa: "/k/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "fee", glyph: "𐑓", name: "(F)ee", ipa: "/f/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "thigh", glyph: "𐑔", name: "(TH)igh", ipa: "/θ/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "so", glyph: "𐑕", name: "(S)o", ipa: "/s/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "sure", glyph: "𐑖", name: "(SH)ure", ipa: "/ʃ/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "church", glyph: "𐑗", name: "(CH)urch", ipa: "/t͡ʃ/", type: "Tall Letter - Voiceless Consonant" },
+    { id: "yea", glyph: "𐑘", name: "(Y)ea", ipa: "/j/", type: "Tall Letter - Approximant" },
+    { id: "hung", glyph: "𐑙", name: "hu(NG)", ipa: "/ŋ/", type: "Tall Letter - Nasal" },
+
+    // Deep Letters
+    { id: "bib", glyph: "𐑚", name: "(B)ib", ipa: "/b/", type: "Deep Letter - Voiced Consonant" },
+    { id: "dead", glyph: "𐑛", name: "(D)ead", ipa: "/d/", type: "Deep Letter - Voiced Consonant" },
+    { id: "gag", glyph: "𐑜", name: "(G)ag", ipa: "/ɡ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "vow", glyph: "𐑝", name: "(V)ow", ipa: "/v/", type: "Deep Letter - Voiced Consonant" },
+    { id: "they", glyph: "𐑞", name: "(TH)ey", ipa: "/ð/", type: "Deep Letter - Voiced Consonant" },
+    { id: "zoo", glyph: "𐑟", name: "(Z)oo", ipa: "/z/", type: "Deep Letter - Voiced Consonant" },
+    { id: "measure", glyph: "𐑠", name: "mea(S)ure", ipa: "/ʒ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "judge", glyph: "𐑡", name: "(J)udge", ipa: "/d͡ʒ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "woe", glyph: "𐑢", name: "(W)oe", ipa: "/w/", type: "Deep Letter - Approximant" },
+    { id: "haha", glyph: "𐑣", name: "(H)aha", ipa: "/h/", type: "Deep Letter - Voiceless Consonant" },
+
+    // Short Letters
+    { id: "loll", glyph: "𐑤", name: "(L)oll", ipa: "/l/", type: "Short Letter - Liquid" },
+    { id: "roar", glyph: "𐑮", name: "(R)oar", ipa: "/ɹ/", type: "Short Letter - Liquid" },
+    { id: "mime", glyph: "𐑥", name: "(M)ime", ipa: "/m/", type: "Short Letter - Nasal" },
+    { id: "nun", glyph: "𐑯", name: "(N)un", ipa: "/n/", type: "Short Letter - Nasal" },
+    { id: "if", glyph: "𐑦", name: "(I)f", ipa: "/ɪ/", type: "Short Letter - Vowel" },
+    { id: "eat", glyph: "𐑰", name: "(E)at", ipa: "/iː/", type: "Short Letter - Vowel" },
+    { id: "egg", glyph: "𐑧", name: "(E)gg", ipa: "/ɛ/", type: "Short Letter - Vowel" },
+    { id: "age", glyph: "𐑱", name: "(A)ge", ipa: "/eɪ/", type: "Short Letter - Vowel" },
+    { id: "ash", glyph: "𐑨", name: "(A)sh", ipa: "/æ/", type: "Short Letter - Vowel" },
+    { id: "ice", glyph: "𐑲", name: "(I)ce", ipa: "/aɪ/", type: "Short Letter - Vowel" },
+    { id: "ado", glyph: "𐑩", name: "(A)do", ipa: "/ə/", type: "Short Letter - Vowel (Schwa)" },
+    { id: "up", glyph: "𐑳", name: "(U)p", ipa: "/ʌ/", type: "Short Letter - Vowel" },
+    { id: "on", glyph: "𐑪", name: "(O)n", ipa: "/ɒ~ɑ/", type: "Short Letter - Vowel" },
+    { id: "oak", glyph: "𐑴", name: "(O)ak", ipa: "/oʊ/", type: "Short Letter - Vowel" },
+    { id: "wool", glyph: "𐑫", name: "w(OO)l", ipa: "/ʊ/", type: "Short Letter - Vowel" },
+    { id: "ooze", glyph: "𐑵", name: "(OO)ze", ipa: "/uː/", type: "Short Letter - Vowel" },
+    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" }
   ];
 
   const STORAGE_PREFIX = 'shavian_go_v1_';
@@ -155,7 +158,7 @@
   function render() {
     const cur = current();
     cardFront.textContent = cur.glyph;
-    cardBack.innerHTML = `<div class="name">${cur.name}</div><div class="ipa"><b>${cur.ipa || ''}</b></div>`;
+    cardBack.innerHTML = `<div class="name">${cur.name}</div><div class="ipa"><b>${cur.ipa || ''}</b></div><div class="type">${cur.type || ''}</div>`;
 
     cardFront.classList.toggle('show', !flipped);
     cardBack.classList.toggle('show', flipped);
@@ -233,14 +236,20 @@
     currentId = pickNext();
     flipped = false; render();
   });
-  el('skipBtn').addEventListener('click', () => { currentId = pickNext(currentId); flipped = false; render(); });
+  function skip() {
+    currentId = pickNext(currentId);
+    flipped = false;
+    render();
+  }
+  el('skipBtn').addEventListener('click', skip);
   el('wrongBtn').addEventListener('click', () => record('wrong'));
   el('correctBtn').addEventListener('click', () => record('correct'));
 
   const card = document.getElementById('card');
   card.addEventListener('click', () => { flipped = !flipped; render(); });
   card.addEventListener('keydown', (e) => {
-    if (e.code === 'Space') { e.preventDefault(); flipped = !flipped; render(); }
+    if (e.code === 'ArrowUp') { e.preventDefault(); flipped = !flipped; render(); }
+    if (e.code === 'ArrowDown') { e.preventDefault(); skip(); }
     if (e.code === 'ArrowLeft') { e.preventDefault(); record('wrong'); }
     if (e.code === 'ArrowRight') { e.preventDefault(); record('correct'); }
   });
