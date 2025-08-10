@@ -49,8 +49,10 @@
   }
 
   const perCardStats = deck.map(d => {
-    const pc = stats.perCard && stats.perCard[d.id] ? stats.perCard[d.id] : { correct: 0, wrong: 0 };
-    return { glyph: d.glyph, correct: pc.correct, wrong: pc.wrong, diff: pc.correct - pc.wrong };
+    const pcRaw = (stats.perCard && stats.perCard[d.id]) || {};
+    const correct = pcRaw.correct || 0;
+    const wrong = pcRaw.wrong || 0;
+    return { glyph: d.glyph, correct, wrong, diff: correct - wrong };
   }).sort((a, b) => b.diff - a.diff);
 
   const labels = perCardStats.map(p => p.glyph);
