@@ -78,6 +78,10 @@
       futureUpper.push({ x: time, y: clamp(y + trend.moe, 0, 100) });
       futureLower.push({ x: time, y: clamp(y - trend.moe, 0, 100) });
     });
+    const lastPoint = progressPoints[progressPoints.length - 1];
+    futurePoints.unshift(lastPoint);
+    futureUpper.unshift({ x: lastPoint.x, y: lastPoint.y });
+    futureLower.unshift({ x: lastPoint.x, y: lastPoint.y });
   }
 
   const perCardStats = deck.map(d => {
