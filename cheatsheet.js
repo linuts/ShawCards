@@ -5,7 +5,7 @@
   const body = document.getElementById('cheatBody');
   deck.forEach(d => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="glyph">${d.glyph}</td><td>${d.name}</td><td>${d.ipa || ''}</td>`;
+    tr.innerHTML = `<td class="glyph">${d.glyph}</td><td>${d.name}</td><td>${d.ipa || ''}</td><td>${d.type || ''}</td>`;
     body.appendChild(tr);
   });
 
