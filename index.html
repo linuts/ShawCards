@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shavian Flashcards</title>
   <link rel="stylesheet" href="/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
   <header class="bar">
     <h1>Shavian Flashcards</h1>
     <div class="actions">
-      <button id="shuffleBtn">Shuffle</button>
       <button id="resetBtn">Reset stats</button>
       <button id="editDeckBtn">Deck JSON</button>
       <a href="/cheatsheet" class="button-link">Cheat sheet</a>
@@ -20,12 +21,14 @@
 
   <main class="grid">
     <section class="card-col">
-      <div class="progress"><div id="progressTrend"></div><div id="progressInner"></div></div>
+      <div class="progress"><div id="progressInner"></div><div id="forecastInner"></div></div>
 
       <div id="card" class="card" tabindex="0" aria-label="Flashcard (press space to flip)">
         <div id="cardFront" class="face show"></div>
         <div id="cardBack" class="face"></div>
       </div>
+
+      <div class="chart-wrap"><canvas id="cardProgressChart" height="80"></canvas></div>
 
       <div class="controls">
         <button id="skipBtn">Skip</button>
