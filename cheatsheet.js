@@ -2,11 +2,8 @@
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const deck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
 
-  const extra = {
-    oil: { id: 'oil', glyph: '𐑶', name: 'Oil' },
-    ah:  { id: 'ah',  glyph: '𐑭', name: 'Ah' },
-    awe: { id: 'awe', glyph: '𐑷', name: 'Awe' }
-  };
+  // All letters are now in the deck, so no extras are required.
+  const extra = {};
 
   function get(id) {
     return deck.find(d => d.id === id) || extra[id];
@@ -57,7 +54,7 @@
 
   const input = document.getElementById('spellInput');
   const keyboard = document.getElementById('keyboard');
-  const keyboardLetters = deck.concat(Object.values(extra)).concat(compounds);
+  const keyboardLetters = deck.concat(compounds);
   keyboardLetters.forEach(d => {
     const btn = document.createElement('button');
     btn.textContent = d.glyph;

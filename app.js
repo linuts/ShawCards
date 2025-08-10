@@ -1,30 +1,26 @@
 (() => {
   const DEFAULT_DECK = [
-    // Tall Letters
+    // Shavian letters in alphabetical order
     { id: "peep", glyph: "𐑐", name: "(P)eep", ipa: "/p/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "tot", glyph: "𐑑", name: "(T)ot", ipa: "/t/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "kick", glyph: "𐑒", name: "(K)ick", ipa: "/k/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "fee", glyph: "𐑓", name: "(F)ee", ipa: "/f/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "thigh", glyph: "𐑔", name: "(TH)igh", ipa: "/θ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "so", glyph: "𐑕", name: "(S)o", ipa: "/s/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "sure", glyph: "𐑖", name: "(SH)ure", ipa: "/ʃ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "church", glyph: "𐑗", name: "(CH)urch", ipa: "/t͡ʃ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "yea", glyph: "𐑘", name: "(Y)ea", ipa: "/j/", type: "Tall Letter - Approximant" },
-    { id: "hung", glyph: "𐑙", name: "hu(NG)", ipa: "/ŋ/", type: "Tall Letter - Nasal" },
-
-    // Deep Letters
     { id: "bib", glyph: "𐑚", name: "(B)ib", ipa: "/b/", type: "Deep Letter - Voiced Consonant" },
+    { id: "tot", glyph: "𐑑", name: "(T)ot", ipa: "/t/", type: "Tall Letter - Voiceless Consonant" },
     { id: "dead", glyph: "𐑛", name: "(D)ead", ipa: "/d/", type: "Deep Letter - Voiced Consonant" },
+    { id: "kick", glyph: "𐑒", name: "(K)ick", ipa: "/k/", type: "Tall Letter - Voiceless Consonant" },
     { id: "gag", glyph: "𐑜", name: "(G)ag", ipa: "/ɡ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "fee", glyph: "𐑓", name: "(F)ee", ipa: "/f/", type: "Tall Letter - Voiceless Consonant" },
     { id: "vow", glyph: "𐑝", name: "(V)ow", ipa: "/v/", type: "Deep Letter - Voiced Consonant" },
+    { id: "thigh", glyph: "𐑔", name: "(TH)igh", ipa: "/θ/", type: "Tall Letter - Voiceless Consonant" },
     { id: "they", glyph: "𐑞", name: "(TH)ey", ipa: "/ð/", type: "Deep Letter - Voiced Consonant" },
+    { id: "so", glyph: "𐑕", name: "(S)o", ipa: "/s/", type: "Tall Letter - Voiceless Consonant" },
     { id: "zoo", glyph: "𐑟", name: "(Z)oo", ipa: "/z/", type: "Deep Letter - Voiced Consonant" },
+    { id: "sure", glyph: "𐑖", name: "(SH)ure", ipa: "/ʃ/", type: "Tall Letter - Voiceless Consonant" },
     { id: "measure", glyph: "𐑠", name: "mea(S)ure", ipa: "/ʒ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "church", glyph: "𐑗", name: "(CH)urch", ipa: "/t͡ʃ/", type: "Tall Letter - Voiceless Consonant" },
     { id: "judge", glyph: "𐑡", name: "(J)udge", ipa: "/d͡ʒ/", type: "Deep Letter - Voiced Consonant" },
+    { id: "yea", glyph: "𐑘", name: "(Y)ea", ipa: "/j/", type: "Tall Letter - Approximant" },
     { id: "woe", glyph: "𐑢", name: "(W)oe", ipa: "/w/", type: "Deep Letter - Approximant" },
+    { id: "hung", glyph: "𐑙", name: "hu(NG)", ipa: "/ŋ/", type: "Tall Letter - Nasal" },
     { id: "haha", glyph: "𐑣", name: "(H)aha", ipa: "/h/", type: "Deep Letter - Voiceless Consonant" },
-
-    // Short Letters
     { id: "loll", glyph: "𐑤", name: "(L)oll", ipa: "/l/", type: "Short Letter - Liquid" },
     { id: "roar", glyph: "𐑮", name: "(R)oar", ipa: "/ɹ/", type: "Short Letter - Liquid" },
     { id: "mime", glyph: "𐑥", name: "(M)ime", ipa: "/m/", type: "Short Letter - Nasal" },
@@ -41,7 +37,10 @@
     { id: "oak", glyph: "𐑴", name: "(O)ak", ipa: "/oʊ/", type: "Short Letter - Vowel" },
     { id: "wool", glyph: "𐑫", name: "w(OO)l", ipa: "/ʊ/", type: "Short Letter - Vowel" },
     { id: "ooze", glyph: "𐑵", name: "(OO)ze", ipa: "/uː/", type: "Short Letter - Vowel" },
-    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" }
+    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" },
+    { id: "oil", glyph: "𐑶", name: "Oil", ipa: "/ɔɪ/", type: "Short Letter - Vowel" },
+    { id: "ah", glyph: "𐑭", name: "Ah", ipa: "/ɑː/", type: "Short Letter - Vowel" },
+    { id: "awe", glyph: "𐑷", name: "Awe", ipa: "/ɔː/", type: "Short Letter - Vowel" }
   ];
 
   const STORAGE_PREFIX = 'shavian_go_v1_';
