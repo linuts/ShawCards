@@ -41,7 +41,18 @@
     { id: "oak", glyph: "𐑴", name: "(O)ak", ipa: "/oʊ/", type: "Short Letter - Vowel" },
     { id: "wool", glyph: "𐑫", name: "w(OO)l", ipa: "/ʊ/", type: "Short Letter - Vowel" },
     { id: "ooze", glyph: "𐑵", name: "(OO)ze", ipa: "/uː/", type: "Short Letter - Vowel" },
-    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" }
+    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" },
+    { id: "oil", glyph: "𐑶", name: "(OI)l", ipa: "/ɔɪ/", type: "Short Letter - Vowel" },
+    { id: "ah", glyph: "𐑭", name: "(A)h", ipa: "/ɑː/", type: "Short Letter - Vowel" },
+    { id: "awe", glyph: "𐑷", name: "(AW)e", ipa: "/ɔː/", type: "Short Letter - Vowel" },
+    { id: "are", glyph: "𐑸", name: "(AR)e", ipa: "/ɑːr/", type: "Compound" },
+    { id: "or", glyph: "𐑹", name: "(OR)", ipa: "/ɔːr/", type: "Compound" },
+    { id: "air", glyph: "𐑺", name: "(AIR)", ipa: "/ɛər/", type: "Compound" },
+    { id: "err", glyph: "𐑻", name: "(ER)r", ipa: "/ɜːr/", type: "Compound" },
+    { id: "array", glyph: "𐑼", name: "a(RA)y", ipa: "/əreɪ/", type: "Compound" },
+    { id: "ear", glyph: "𐑽", name: "(EAR)", ipa: "/ɪər/", type: "Compound" },
+    { id: "ian", glyph: "𐑾", name: "(I)an", ipa: "/iən/", type: "Compound" },
+    { id: "yew", glyph: "𐑿", name: "(Y)ew", ipa: "/juː/", type: "Compound" }
   ];
 
   const STORAGE_PREFIX = 'shavian_go_v1_';

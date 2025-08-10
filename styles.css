@@ -43,14 +43,16 @@ button.primary{ background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
 .chart-wrap{ max-width:100%; }
 @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } #cardFront{ font-size:72px; } }
 
-.keyboard{ display:flex; flex-direction:column; gap:4px; margin-top:8px; }
-.keyboard-row{ display:flex; gap:4px; justify-content:center; }
-.keyboard button{ width:40px; height:40px; font-size:24px; padding:0; }
-.key-spacer{ width:40px; }
-#spellInput{ width:100%; margin-top:8px; font-size:24px; padding:8px; border:1px solid var(--line); border-radius:12px; }
+  .keyboard{ display:flex; flex-direction:column; gap:4px; margin-top:8px; }
+  .keyboard-row{ display:flex; gap:4px; justify-content:center; }
+  .keyboard button{ width:40px; height:40px; font-size:24px; padding:0; }
+  .keyboard button.shift{ width:60px; }
+  #spellInput{ width:100%; margin-top:8px; font-size:24px; padding:8px; border:1px solid var(--line); border-radius:12px; }
 
-.letter-grid{ display:flex; flex-direction:column; gap:4px; }
-.letter-row{ display:flex; gap:4px; justify-content:center; }
-.letter-cell{ width:60px; text-align:center; }
-.letter-cell .glyph{ font-size:24px; line-height:1; }
-.letter-cell .name{ font-size:10px; color:var(--muted); }
+  #letters{ display:flex; flex-direction:column; gap:12px; }
+  .letter-group h3{ text-align:center; margin:0; font-size:16px; }
+  .letter-row{ display:flex; gap:4px; justify-content:center; }
+  .letter-cell{ display:flex; gap:4px; }
+  .letter{ display:flex; flex-direction:column; align-items:center; width:40px; }
+  .letter .glyph{ font-size:24px; line-height:1; }
+  .letter .name{ font-size:10px; color:var(--muted); }
