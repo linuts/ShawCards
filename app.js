@@ -103,6 +103,38 @@
     return deck[(idx + 1) % deck.length].id;
   }
 
+  function selectNext() {
+    const allAttempted = deck.every(d => {
+      const pc = stats.perCard[d.id];
+      return pc && (pc.correct + pc.wrong) > 0;
+    });
+    if (!allAttempted) {
+      const idx = deck.findIndex(d => d.id === currentId);
+      for (let i = 1; i <= deck.length; i++) {
+        const next = deck[(idx + i) % deck.length];
+        const pc = stats.perCard[next.id];
+        if (!pc || (pc.correct + pc.wrong) === 0) return next.id;
+      }
+      return deck[(idx + 1) % deck.length].id;
+    }
+    const weights = deck.map(d => {
+      const pc = stats.perCard[d.id] || { correct: 0, wrong: 0 };
+      return (pc.wrong + 1) / (pc.correct + 1);
+    });
+    const maxW = Math.max(...weights);
+    const minW = Math.min(...weights);
+    if (Math.abs(maxW - minW) < 1e-9) {
+      return nextId(currentId);
+    }
+    const total = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    for (let i = 0; i < deck.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return deck[i].id;
+    }
+    return deck[deck.length - 1].id;
+  }
+
   function fourierForecast(points, steps) {
     const n = points.length;
     if (n === 0) return { forecast: [], moe: 0 };
@@ -220,7 +252,7 @@
     (pc.attempts || (pc.attempts = [])).push({ t: now, result });
     stats.perCard[id] = pc;
     (stats.attempts || (stats.attempts = [])).push({ t: now, result });
-    currentId = nextId(id);
+    currentId = selectNext();
     flipped = false;
     render();
   }
@@ -230,7 +262,7 @@
     flipped = false; render();
   });
   function skip() {
-    currentId = nextId(currentId);
+    currentId = selectNext();
     flipped = false;
     render();
   }
