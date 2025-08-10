@@ -40,7 +40,15 @@
     { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" },
     { id: "oil", glyph: "𐑶", name: "Oil", ipa: "/ɔɪ/", type: "Short Letter - Vowel" },
     { id: "ah", glyph: "𐑭", name: "Ah", ipa: "/ɑː/", type: "Short Letter - Vowel" },
-    { id: "awe", glyph: "𐑷", name: "Awe", ipa: "/ɔː/", type: "Short Letter - Vowel" }
+    { id: "awe", glyph: "𐑷", name: "Awe", ipa: "/ɔː/", type: "Short Letter - Vowel" },
+    { id: "are", glyph: "𐑸", name: "Are", ipa: "/ɑr/", type: "Compound Vowel" },
+    { id: "or", glyph: "𐑹", name: "Or", ipa: "/ɔr/", type: "Compound Vowel" },
+    { id: "air", glyph: "𐑺", name: "Air", ipa: "/ɛr/", type: "Compound Vowel" },
+    { id: "err", glyph: "𐑻", name: "Err", ipa: "/ɜr/", type: "Compound Vowel" },
+    { id: "array", glyph: "𐑼", name: "Array", ipa: "/ər/", type: "Compound Vowel" },
+    { id: "ear", glyph: "𐑽", name: "Ear", ipa: "/ɪr/", type: "Compound Vowel" },
+    { id: "ian", glyph: "𐑾", name: "Ian", ipa: "/aɪr/", type: "Compound Vowel" },
+    { id: "yew", glyph: "𐑿", name: "Yew", ipa: "/juː/", type: "Compound Vowel" }
   ];
 
   const STORAGE_PREFIX = 'shavian_go_v1_';
