@@ -1,20 +1,20 @@
- (async () => {
-  const STORAGE_PREFIX = 'shavian_go_v1_';
+(async () => {
   const el = (id) => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   let deck = await (await fetch('/api/deck')).json();
   let currentId = deck[0].id;
   let flipped = false;
-  let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
+  let stats = {
     totalCorrect: 0,
     totalWrong: 0,
     perCard: {},
     attempts: [],
   };
   let accountCode = '';
+  const welcomeDialog = el('welcomeDialog');
+  const welcomeCloseBtn = el('welcomeCloseBtn');
 
   function persist() {
-    localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
     scheduleSave();
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
@@ -44,7 +44,6 @@
     accountCode = location.hash.slice(1);
     if (!accountCode) {
       stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, attempts: [] };
-      localStorage.removeItem(STORAGE_PREFIX + 'stats');
       const res = await fetch('/api/new-account', { method: 'POST' });
       const data = await res.json();
       accountCode = data.code;
@@ -62,7 +61,6 @@
       const data = await res.json();
       if (data.stats) {
         stats = data.stats;
-        localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
       }
     }
   }
@@ -248,6 +246,12 @@
   });
 
   await ensureAccount();
+  if (!stats.attempts || stats.attempts.length === 0) {
+    welcomeDialog.classList.remove('hidden');
+    welcomeCloseBtn.addEventListener('click', () => {
+      welcomeDialog.classList.add('hidden');
+    });
+  }
   currentId = deck[0].id;
   render();
 })();

@@ -64,6 +64,11 @@ td.glyph{ font-size:22px; }
 
 .card-controls{ justify-content:center; }
 
+.dialog{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:1000; }
+.dialog.hidden{ display:none; }
+.dialog-content{ background:#fff; padding:24px; border-radius:12px; max-width:400px; text-align:center; }
+
+
 @media (max-width:600px){
   body.flashcard-page{ padding-bottom:70px; }
   .card-controls{
