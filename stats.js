@@ -1,13 +1,13 @@
 (async () => {
   const STORAGE_PREFIX = 'shavian_go_v1_';
-  let accountCode = location.hash.slice(1) || localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+  let accountCode = location.hash.slice(1);
   if (!accountCode) {
+    localStorage.removeItem(STORAGE_PREFIX + 'stats');
     const res = await fetch('/api/new-account', { method: 'POST' });
     const data = await res.json();
     accountCode = data.code;
+    location.hash = accountCode;
   }
-  location.hash = accountCode;
-  localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
   document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"]').forEach(link => {
     const path = link.getAttribute('href').split('#')[0];
     link.href = path + '#' + accountCode;

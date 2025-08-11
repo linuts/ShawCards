@@ -8,7 +8,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -110,7 +109,10 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS accounts (code TEXT PRIMARY KEY, data TEXT)"); err != nil {
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS accounts (code TEXT PRIMARY KEY)"); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS account_stats (account_code TEXT PRIMARY KEY, stats TEXT, FOREIGN KEY(account_code) REFERENCES accounts(code))"); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS deck (id INTEGER PRIMARY KEY, glyph TEXT, name TEXT, ipa TEXT)"); err != nil {
@@ -182,7 +184,7 @@ func main() {
 			http.Error(w, "code gen", http.StatusInternalServerError)
 			return
 		}
-		if _, err := db.Exec("INSERT INTO accounts(code, data) VALUES(?, '{}')", code); err != nil {
+		if _, err := db.Exec("INSERT INTO accounts(code) VALUES(?)", code); err != nil {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
@@ -207,12 +209,7 @@ func main() {
 			http.Error(w, "missing code", http.StatusBadRequest)
 			return
 		}
-		data, err := json.Marshal(map[string]json.RawMessage{"stats": req.Stats})
-		if err != nil {
-			http.Error(w, "encode", http.StatusInternalServerError)
-			return
-		}
-		if _, err := db.Exec("INSERT INTO accounts(code, data) VALUES(?, ?) ON CONFLICT(code) DO UPDATE SET data=excluded.data", req.Code, string(data)); err != nil {
+		if _, err := db.Exec("INSERT INTO account_stats(account_code, stats) VALUES(?, ?) ON CONFLICT(account_code) DO UPDATE SET stats=excluded.stats", req.Code, string(req.Stats)); err != nil {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
@@ -235,18 +232,18 @@ func main() {
 			http.Error(w, "missing code", http.StatusBadRequest)
 			return
 		}
-		var data string
-		err := db.QueryRow("SELECT data FROM accounts WHERE code=?", req.Code).Scan(&data)
-		if err == sql.ErrNoRows {
-			http.Error(w, "not found", http.StatusNotFound)
-			return
-		}
-		if err != nil {
+		var stats sql.NullString
+		err := db.QueryRow("SELECT stats FROM account_stats WHERE account_code=?", req.Code).Scan(&stats)
+		if err != nil && err != sql.ErrNoRows {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		io.WriteString(w, data)
+		if stats.Valid {
+			fmt.Fprintf(w, "{\"stats\":%s}", stats.String)
+		} else {
+			fmt.Fprint(w, "{\"stats\":null}")
+		}
 	})
 
 	mux.HandleFunc("/api/deck", func(w http.ResponseWriter, r *http.Request) {

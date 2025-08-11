@@ -12,11 +12,10 @@
     sessions: 1,
     attempts: [],
   };
-  let accountCode = localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+  let accountCode = '';
 
   function persist() {
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
-    if (accountCode) localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
     scheduleSave();
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
@@ -47,14 +46,15 @@
   });
 
   async function ensureAccount() {
-    accountCode = location.hash.slice(1) || localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+    accountCode = location.hash.slice(1);
     if (!accountCode) {
+      stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: 1, attempts: [] };
+      localStorage.removeItem(STORAGE_PREFIX + 'stats');
       const res = await fetch('/api/new-account', { method: 'POST' });
       const data = await res.json();
       accountCode = data.code;
+      location.hash = accountCode;
     }
-    location.hash = accountCode;
-    localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
     document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"]').forEach(a => {
       a.href = a.getAttribute('href') + '#' + accountCode;
     });
@@ -65,7 +65,10 @@
     });
     if (res.ok) {
       const data = await res.json();
-      stats = data.stats || stats;
+      if (data.stats) {
+        stats = data.stats;
+        localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
+      }
     }
   }
   const cardProgressChart = new Chart(document.getElementById('cardProgressChart').getContext('2d'), {
@@ -243,11 +246,6 @@
     flipped = false;
     render();
   }
-  el('resetBtn').addEventListener('click', () => {
-    stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1, attempts: [] };
-    currentId = deck[0].id;
-    flipped = false; render();
-  });
   function skip() {
     currentId = selectNext();
     flipped = false;
