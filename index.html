@@ -13,7 +13,6 @@
     <h1>Shavian Flashcards</h1>
     <div class="actions">
       <button id="resetBtn">Reset stats</button>
-      <button id="editDeckBtn">Deck JSON</button>
       <a href="/cheatsheet" class="button-link">Cheat sheet</a>
       <a href="/stats" class="button-link">Stats</a>
     </div>
@@ -58,19 +57,6 @@
       </div>
     </aside>
   </main>
-
-  <dialog id="deckDialog">
-    <form method="dialog">
-      <h3>Edit deck (JSON)</h3>
-      <textarea id="deckTextarea"></textarea>
-      <div class="dlg-actions">
-        <button id="resetDeckBtn" value="reset" type="button">Reset to default</button>
-        <button id="saveDeckBtn" value="default" type="button" class="primary">Save</button>
-        <button value="cancel">Close</button>
-      </div>
-      <p class="help">Fields: <code>id</code>, <code>glyph</code>, <code>name</code>, optional <code>ipa</code>. Stats are tracked per <code>id</code>. If glyphs are boxes, install a font like <em>Noto Sans Shavian</em>.</p>
-    </form>
-  </dialog>
 
   <footer class="foot">Built with Go + vanilla JS. Data lives in your browser (localStorage).</footer>
 

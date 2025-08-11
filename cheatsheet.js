@@ -19,18 +19,9 @@
   });
   if (res.ok) {
     const data = await res.json();
-    if (data.deck) localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(data.deck));
     if (data.stats) localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(data.stats));
   }
-  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
-  const ORDER = [
-    'peep','bib','tot','dead','kick','gag','fee','vow','thigh','they','so','zoo',
-    'sure','measure','church','judge','yea','woe','hung','haha','loll','roar','mime',
-    'nun','if','eat','egg','age','ash','ice','ado','up','on','oak','wool','ooze',
-    'out','oil','ah','awe','are','or','air','err','array','ear','ian','yew'
-  ];
-  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
-  const deck = ORDER.map(id => deckMap.get(id)).filter(Boolean);
+  const deck = await (await fetch('/api/deck')).json();
 
   function get(id) {
     return deck.find(d => d.id === id) || { glyph: id, name: id };
@@ -44,18 +35,18 @@
   }
 
   const tallDeepPairs = [
-    ['peep', 'bib'], ['tot', 'dead'], ['kick', 'gag'], ['fee', 'vow'],
-    ['thigh', 'they'], ['so', 'zoo'], ['sure', 'measure'], ['church', 'judge'],
-    ['yea', 'woe'], ['hung', 'haha']
+    [1, 2], [3, 4], [5, 6], [7, 8],
+    [9, 10], [11, 12], [13, 14], [15, 16],
+    [17, 18], [19, 20]
   ];
 
   const shortPairs = [
-    ['loll', 'roar'], ['mime', 'nun'], ['if', 'eat'], ['egg', 'age'],
-    ['ash', 'ice'], ['ado', 'up'], ['on', 'oak'], ['wool', 'ooze'],
-    ['out', 'oil'], ['ah', 'awe']
+    [21, 22], [23, 24], [25, 26], [27, 28],
+    [29, 30], [31, 32], [33, 34], [35, 36],
+    [37, 38], [39, 40]
   ];
 
-  const compounds = ['are','or','air','err','array','ear','ian','yew'];
+  const compounds = [41,42,43,44,45,46,47,48];
 
   function buildPairs(id, pairs) {
     const grid = document.getElementById(id);

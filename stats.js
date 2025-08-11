@@ -19,19 +19,10 @@
   });
   if (res.ok) {
     const data = await res.json();
-    if (data.deck) localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(data.deck));
     if (data.stats) localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(data.stats));
   }
   const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
-  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
-  const ORDER = [
-    'peep','bib','tot','dead','kick','gag','fee','vow','thigh','they','so','zoo',
-    'sure','measure','church','judge','yea','woe','hung','haha','loll','roar','mime',
-    'nun','if','eat','egg','age','ash','ice','ado','up','on','oak','wool','ooze',
-    'out','oil','ah','awe','are','or','air','err','array','ear','ian','yew'
-  ];
-  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
-  const deck = ORDER.map(id => deckMap.get(id)).filter(Boolean);
+  const deck = await (await fetch('/api/deck')).json();
 
   document.getElementById('totalSessions').textContent = stats.sessions || 1;
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
