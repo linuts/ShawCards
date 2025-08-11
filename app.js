@@ -9,7 +9,6 @@
     totalCorrect: 0,
     totalWrong: 0,
     perCard: {},
-    sessions: 1,
     attempts: [],
   };
   let accountCode = '';
@@ -48,7 +47,7 @@
   async function ensureAccount() {
     accountCode = location.hash.slice(1);
     if (!accountCode) {
-      stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: 1, attempts: [] };
+      stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, attempts: [] };
       localStorage.removeItem(STORAGE_PREFIX + 'stats');
       const res = await fetch('/api/new-account', { method: 'POST' });
       const data = await res.json();

@@ -24,7 +24,6 @@
   const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
   const deck = await (await fetch('/api/deck')).json();
 
-  document.getElementById('totalSessions').textContent = stats.sessions || 1;
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
   document.getElementById('totalWrong').textContent = stats.totalWrong || 0;
   const total = (stats.totalCorrect || 0) + (stats.totalWrong || 0);
