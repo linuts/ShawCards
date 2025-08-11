@@ -10,6 +10,23 @@
     const path = link.getAttribute('href').split('#')[0];
     link.href = path + '#' + accountCode;
   });
+  const welcomeDialog = document.getElementById('welcomeDialog');
+  const welcomeCloseBtn = document.getElementById('welcomeCloseBtn');
+  const loadRes = await fetch('/api/load', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: accountCode })
+  });
+  if (loadRes.ok) {
+    const data = await loadRes.json();
+    const stats = data.stats;
+    if (!stats || !stats.attempts || stats.attempts.length === 0) {
+      welcomeDialog.classList.remove('hidden');
+      welcomeCloseBtn.addEventListener('click', () => {
+        welcomeDialog.classList.add('hidden');
+      });
+    }
+  }
   const prog = document.getElementById('progressInner');
   const forecast = document.getElementById('forecastInner');
   if (prog && forecast) {

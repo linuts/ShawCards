@@ -11,8 +11,6 @@
     attempts: [],
   };
   let accountCode = '';
-  const welcomeDialog = el('welcomeDialog');
-  const welcomeCloseBtn = el('welcomeCloseBtn');
 
   function persist() {
     scheduleSave();
@@ -246,12 +244,6 @@
   });
 
   await ensureAccount();
-  if (!stats.attempts || stats.attempts.length === 0) {
-    welcomeDialog.classList.remove('hidden');
-    welcomeCloseBtn.addEventListener('click', () => {
-      welcomeDialog.classList.add('hidden');
-    });
-  }
   currentId = deck[0].id;
   render();
 })();

@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  <script>
+    if (!location.hash) location.replace('/help');
+  </script>
 </head>
   <body class="flashcard-page">
   <header class="bar">
@@ -38,15 +41,6 @@
       <p class="tip">Click or press <kbd>↑</kbd> to flip. Use <kbd>←</kbd>/<kbd>→</kbd> for Wrong/Correct, <kbd>↓</kbd> to skip.</p>
     </section>
   </main>
-
-  <div id="welcomeDialog" class="dialog hidden">
-    <div class="dialog-content">
-      <h2>Welcome</h2>
-      <p>Your progress is saved automatically on our server using a unique code in the URL. Bookmark this page to resume later.</p>
-      <button id="welcomeCloseBtn">Get started</button>
-    </div>
-  </div>
-
   <script src="/app.js"></script>
 </body>
 </html>
