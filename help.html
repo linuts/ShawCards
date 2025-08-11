@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help - Shavian Flashcards</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+  <header class="bar">
+    <h1>Help</h1>
+    <nav class="actions"><a href="/">Cards</a><a href="/cheatsheet">Cheat sheet</a><a href="/stats">Stats</a></nav>
+  </header>
+  <main class="stats-page">
+    <h2>What is ShawCards?</h2>
+    <p>ShawCards helps you learn the Shavian alphabet with flashcards and tracks your mastery as you practice.</p>
+    <h2>Saving your progress</h2>
+    <p>Your progress lives on our server. The code after the <code>#</code> in the URL is your account—bookmark or share the link to continue on any device.</p>
+    <h2>Using the flashcards</h2>
+    <p>Flip the card with a click or the <kbd>↑</kbd> key. Mark answers with <kbd>←</kbd> for wrong and <kbd>→</kbd> for correct. Use <kbd>↓</kbd> to skip.</p>
+    <h3>Progress bar</h3>
+    <p>The bar above the card shows how well you've learned it. The green portion is your current mastery. The translucent blue extension forecasts where you'll be after the next attempt.</p>
+    <div class="progress"><div id="progressInner"></div><div id="forecastInner"></div></div>
+    <p class="tip">Here you've learned 60% of the card and are expected to reach about 80%.</p>
+    <h2>Understanding the stats</h2>
+    <h3>Learning progress over time</h3>
+    <p>The green line tracks your smoothed accuracy after each attempt. The blue line projects future learning, with faint bounds marking a confidence range.</p>
+    <div class="chart-wrap"><canvas id="progressChartExample"></canvas></div>
+    <h3>Per-card performance</h3>
+    <p>The bar chart compares how many times you've marked each card correct or wrong.</p>
+    <div class="chart-wrap"><canvas id="perCardChartExample"></canvas></div>
+    <h3>Individual card progress</h3>
+    <p>Click a bar in the chart above to see how your accuracy for that card changes over time.</p>
+    <h4 id="cardProgressExampleTitle">Card 𐑕</h4>
+    <div class="chart-wrap"><canvas id="cardProgressChartExample"></canvas></div>
+  </main>
+  <div id="welcomeDialog" class="dialog hidden">
+    <div class="dialog-content">
+      <h2>Welcome</h2>
+      <p>Your progress is saved automatically on our server using a unique code in the URL. Bookmark this page to resume later.</p>
+      <button id="welcomeCloseBtn">Get started</button>
+    </div>
+  </div>
+  <script src="/help.js"></script>
+</body>
+</html>

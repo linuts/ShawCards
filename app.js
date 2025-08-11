@@ -1,11 +1,10 @@
- (async () => {
-  const STORAGE_PREFIX = 'shavian_go_v1_';
+(async () => {
   const el = (id) => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   let deck = await (await fetch('/api/deck')).json();
   let currentId = deck[0].id;
   let flipped = false;
-  let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
+  let stats = {
     totalCorrect: 0,
     totalWrong: 0,
     perCard: {},
@@ -14,7 +13,6 @@
   let accountCode = '';
 
   function persist() {
-    localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
     scheduleSave();
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
@@ -44,13 +42,12 @@
     accountCode = location.hash.slice(1);
     if (!accountCode) {
       stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, attempts: [] };
-      localStorage.removeItem(STORAGE_PREFIX + 'stats');
       const res = await fetch('/api/new-account', { method: 'POST' });
       const data = await res.json();
       accountCode = data.code;
       location.hash = accountCode;
     }
-    document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"]').forEach(a => {
+    document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"], a[href="/help"]').forEach(a => {
       a.href = a.getAttribute('href') + '#' + accountCode;
     });
     const res = await fetch('/api/load', {
@@ -62,7 +59,6 @@
       const data = await res.json();
       if (data.stats) {
         stats = data.stats;
-        localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
       }
     }
   }

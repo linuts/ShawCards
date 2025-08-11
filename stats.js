@@ -1,14 +1,12 @@
 (async () => {
-  const STORAGE_PREFIX = 'shavian_go_v1_';
   let accountCode = location.hash.slice(1);
   if (!accountCode) {
-    localStorage.removeItem(STORAGE_PREFIX + 'stats');
     const res = await fetch('/api/new-account', { method: 'POST' });
     const data = await res.json();
     accountCode = data.code;
     location.hash = accountCode;
   }
-  document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"]').forEach(link => {
+  document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"], a[href="/help"]').forEach(link => {
     const path = link.getAttribute('href').split('#')[0];
     link.href = path + '#' + accountCode;
   });
@@ -17,14 +15,15 @@
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ code: accountCode })
   });
+  let stats = {};
   if (res.ok) {
     const data = await res.json();
-    if (data.stats) localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(data.stats));
+    if (data.stats) stats = data.stats;
   }
-  const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
   const deck = await (await fetch('/api/deck')).json();
 
   const cardChartWrap = document.getElementById('cardChartWrap');
+  const cardProgressTitle = document.getElementById('cardProgressTitle');
 
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
   document.getElementById('totalWrong').textContent = stats.totalWrong || 0;
@@ -218,6 +217,9 @@
     cardProgressChart.data.datasets[2].data = futureUpper;
     cardProgressChart.data.datasets[3].data = futureLower;
     cardProgressChart.update();
+    const card = deck.find(d => d.id === id);
+    cardProgressTitle.textContent = `Card ${card.glyph}`;
+    cardProgressTitle.style.display = 'block';
     cardChartWrap.style.display = 'block';
   }
 

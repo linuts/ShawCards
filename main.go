@@ -35,6 +35,12 @@ var cheatHTML string
 
 //go:embed cheatsheet.js
 var cheatJS string
+
+//go:embed help.html
+var helpHTML string
+
+//go:embed help.js
+var helpJS string
 var db *sql.DB
 
 type deckEntry struct {
@@ -191,6 +197,18 @@ func main() {
 	mux.HandleFunc("/cheatsheet.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 		fmt.Fprint(w, cheatJS)
+	})
+
+	// Serve help.html
+	mux.HandleFunc("/help", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, helpHTML)
+	})
+
+	// Serve help.js
+	mux.HandleFunc("/help.js", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+		fmt.Fprint(w, helpJS)
 	})
 
 	mux.HandleFunc("/api/new-account", func(w http.ResponseWriter, r *http.Request) {
