@@ -1,77 +1,20 @@
-(async () => {
-  const DEFAULT_DECK = [
-    // Shavian letters in alphabetical order
-    { id: "peep", glyph: "𐑐", name: "(P)eep", ipa: "/p/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "bib", glyph: "𐑚", name: "(B)ib", ipa: "/b/", type: "Deep Letter - Voiced Consonant" },
-    { id: "tot", glyph: "𐑑", name: "(T)ot", ipa: "/t/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "dead", glyph: "𐑛", name: "(D)ead", ipa: "/d/", type: "Deep Letter - Voiced Consonant" },
-    { id: "kick", glyph: "𐑒", name: "(K)ick", ipa: "/k/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "gag", glyph: "𐑜", name: "(G)ag", ipa: "/ɡ/", type: "Deep Letter - Voiced Consonant" },
-    { id: "fee", glyph: "𐑓", name: "(F)ee", ipa: "/f/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "vow", glyph: "𐑝", name: "(V)ow", ipa: "/v/", type: "Deep Letter - Voiced Consonant" },
-    { id: "thigh", glyph: "𐑔", name: "(TH)igh", ipa: "/θ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "they", glyph: "𐑞", name: "(TH)ey", ipa: "/ð/", type: "Deep Letter - Voiced Consonant" },
-    { id: "so", glyph: "𐑕", name: "(S)o", ipa: "/s/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "zoo", glyph: "𐑟", name: "(Z)oo", ipa: "/z/", type: "Deep Letter - Voiced Consonant" },
-    { id: "sure", glyph: "𐑖", name: "(SH)ure", ipa: "/ʃ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "measure", glyph: "𐑠", name: "mea(S)ure", ipa: "/ʒ/", type: "Deep Letter - Voiced Consonant" },
-    { id: "church", glyph: "𐑗", name: "(CH)urch", ipa: "/t͡ʃ/", type: "Tall Letter - Voiceless Consonant" },
-    { id: "judge", glyph: "𐑡", name: "(J)udge", ipa: "/d͡ʒ/", type: "Deep Letter - Voiced Consonant" },
-    { id: "yea", glyph: "𐑘", name: "(Y)ea", ipa: "/j/", type: "Tall Letter - Approximant" },
-    { id: "woe", glyph: "𐑢", name: "(W)oe", ipa: "/w/", type: "Deep Letter - Approximant" },
-    { id: "hung", glyph: "𐑙", name: "hu(NG)", ipa: "/ŋ/", type: "Tall Letter - Nasal" },
-    { id: "haha", glyph: "𐑣", name: "(H)aha", ipa: "/h/", type: "Deep Letter - Voiceless Consonant" },
-    { id: "loll", glyph: "𐑤", name: "(L)oll", ipa: "/l/", type: "Short Letter - Liquid" },
-    { id: "roar", glyph: "𐑮", name: "(R)oar", ipa: "/ɹ/", type: "Short Letter - Liquid" },
-    { id: "mime", glyph: "𐑥", name: "(M)ime", ipa: "/m/", type: "Short Letter - Nasal" },
-    { id: "nun", glyph: "𐑯", name: "(N)un", ipa: "/n/", type: "Short Letter - Nasal" },
-    { id: "if", glyph: "𐑦", name: "(I)f", ipa: "/ɪ/", type: "Short Letter - Vowel" },
-    { id: "eat", glyph: "𐑰", name: "(E)at", ipa: "/iː/", type: "Short Letter - Vowel" },
-    { id: "egg", glyph: "𐑧", name: "(E)gg", ipa: "/ɛ/", type: "Short Letter - Vowel" },
-    { id: "age", glyph: "𐑱", name: "(A)ge", ipa: "/eɪ/", type: "Short Letter - Vowel" },
-    { id: "ash", glyph: "𐑨", name: "(A)sh", ipa: "/æ/", type: "Short Letter - Vowel" },
-    { id: "ice", glyph: "𐑲", name: "(I)ce", ipa: "/aɪ/", type: "Short Letter - Vowel" },
-    { id: "ado", glyph: "𐑩", name: "(A)do", ipa: "/ə/", type: "Short Letter - Vowel (Schwa)" },
-    { id: "up", glyph: "𐑳", name: "(U)p", ipa: "/ʌ/", type: "Short Letter - Vowel" },
-    { id: "on", glyph: "𐑪", name: "(O)n", ipa: "/ɒ~ɑ/", type: "Short Letter - Vowel" },
-    { id: "oak", glyph: "𐑴", name: "(O)ak", ipa: "/oʊ/", type: "Short Letter - Vowel" },
-    { id: "wool", glyph: "𐑫", name: "w(OO)l", ipa: "/ʊ/", type: "Short Letter - Vowel" },
-    { id: "ooze", glyph: "𐑵", name: "(OO)ze", ipa: "/uː/", type: "Short Letter - Vowel" },
-    { id: "out", glyph: "𐑬", name: "(OU)t", ipa: "/aʊ/", type: "Short Letter - Vowel" },
-    { id: "oil", glyph: "𐑶", name: "Oil", ipa: "/ɔɪ/", type: "Short Letter - Vowel" },
-    { id: "ah", glyph: "𐑭", name: "Ah", ipa: "/ɑː/", type: "Short Letter - Vowel" },
-    { id: "awe", glyph: "𐑷", name: "Awe", ipa: "/ɔː/", type: "Short Letter - Vowel" },
-    { id: "are", glyph: "𐑸", name: "Are", ipa: "/ɑr/", type: "Compound Vowel" },
-    { id: "or", glyph: "𐑹", name: "Or", ipa: "/ɔr/", type: "Compound Vowel" },
-    { id: "air", glyph: "𐑺", name: "Air", ipa: "/ɛr/", type: "Compound Vowel" },
-    { id: "err", glyph: "𐑻", name: "Err", ipa: "/ɜr/", type: "Compound Vowel" },
-    { id: "array", glyph: "𐑼", name: "Array", ipa: "/ər/", type: "Compound Vowel" },
-    { id: "ear", glyph: "𐑽", name: "Ear", ipa: "/ɪr/", type: "Compound Vowel" },
-    { id: "ian", glyph: "𐑾", name: "Ian", ipa: "/aɪr/", type: "Compound Vowel" },
-    { id: "yew", glyph: "𐑿", name: "Yew", ipa: "/juː/", type: "Compound Vowel" }
-  ];
-
+ (async () => {
   const STORAGE_PREFIX = 'shavian_go_v1_';
   const el = (id) => document.getElementById(id);
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
-  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || 'null') || [];
-  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
-  let deck = DEFAULT_DECK.map(d => deckMap.get(d.id) || d);
+  let deck = await (await fetch('/api/deck')).json();
   let currentId = deck[0].id;
   let flipped = false;
   let stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || 'null') || {
     totalCorrect: 0,
     totalWrong: 0,
     perCard: {},
-    sessions: 1,
     attempts: [],
   };
-  let accountCode = localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+  let accountCode = '';
 
   function persist() {
-    localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(deck));
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
-    if (accountCode) localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
     scheduleSave();
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
@@ -92,24 +35,25 @@
       fetch('/api/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: accountCode, deck, stats })
+        body: JSON.stringify({ code: accountCode, stats })
       });
     }, 1000);
   }
   window.addEventListener('beforeunload', () => {
     if (!accountCode) return;
-    navigator.sendBeacon('/api/save', new Blob([JSON.stringify({ code: accountCode, deck, stats })], { type: 'application/json' }));
+    navigator.sendBeacon('/api/save', new Blob([JSON.stringify({ code: accountCode, stats })], { type: 'application/json' }));
   });
 
   async function ensureAccount() {
-    accountCode = location.hash.slice(1) || localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+    accountCode = location.hash.slice(1);
     if (!accountCode) {
+      stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, attempts: [] };
+      localStorage.removeItem(STORAGE_PREFIX + 'stats');
       const res = await fetch('/api/new-account', { method: 'POST' });
       const data = await res.json();
       accountCode = data.code;
+      location.hash = accountCode;
     }
-    location.hash = accountCode;
-    localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
     document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"]').forEach(a => {
       a.href = a.getAttribute('href') + '#' + accountCode;
     });
@@ -120,8 +64,10 @@
     });
     if (res.ok) {
       const data = await res.json();
-      deck = data.deck || deck;
-      stats = data.stats || stats;
+      if (data.stats) {
+        stats = data.stats;
+        localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
+      }
     }
   }
   const cardProgressChart = new Chart(document.getElementById('cardProgressChart').getContext('2d'), {
@@ -226,7 +172,7 @@
   function render() {
     const cur = current();
     cardFront.textContent = cur.glyph;
-    cardBack.innerHTML = `<div class="name">${cur.name}</div><div class="ipa"><b>${cur.ipa || ''}</b></div><div class="type">${cur.type || ''}</div>`;
+    cardBack.innerHTML = `<div class="name">${cur.name}</div><div class="ipa"><b>${cur.ipa || ''}</b></div>`;
 
     cardFront.classList.toggle('show', !flipped);
     cardBack.classList.toggle('show', flipped);
@@ -299,11 +245,6 @@
     flipped = false;
     render();
   }
-  el('resetBtn').addEventListener('click', () => {
-    stats = { totalCorrect: 0, totalWrong: 0, perCard: {}, sessions: (stats.sessions||0)+1, attempts: [] };
-    currentId = deck[0].id;
-    flipped = false; render();
-  });
   function skip() {
     currentId = selectNext();
     flipped = false;
@@ -320,30 +261,6 @@
     if (e.code === 'ArrowDown') { e.preventDefault(); skip(); }
     if (e.code === 'ArrowLeft') { e.preventDefault(); record('wrong'); }
     if (e.code === 'ArrowRight') { e.preventDefault(); record('correct'); }
-  });
-
-  const deckDialog = document.getElementById('deckDialog');
-  const deckTextarea = document.getElementById('deckTextarea');
-  document.getElementById('editDeckBtn').addEventListener('click', () => {
-    deckTextarea.value = JSON.stringify(deck, null, 2);
-    deckDialog.showModal();
-  });
-  document.getElementById('saveDeckBtn').addEventListener('click', () => {
-    try {
-      const parsed = JSON.parse(deckTextarea.value);
-      if (!Array.isArray(parsed)) throw new Error('Deck must be an array');
-      parsed.forEach((d,i)=>{ if(!d.id||!d.glyph||!d.name) throw new Error('Missing fields at index '+i); });
-      deck = parsed.map(d=>({ id: String(d.id), glyph: String(d.glyph), name: String(d.name), ipa: d.ipa?String(d.ipa):'' }));
-      currentId = deck[0] ? deck[0].id : null;
-      flipped = false;
-      render();
-      deckDialog.close();
-    } catch (e) {
-      alert('Invalid JSON: ' + e.message);
-    }
-  });
-  document.getElementById('resetDeckBtn').addEventListener('click', () => {
-    deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
 
   await ensureAccount();

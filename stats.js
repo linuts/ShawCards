@@ -1,13 +1,13 @@
 (async () => {
   const STORAGE_PREFIX = 'shavian_go_v1_';
-  let accountCode = location.hash.slice(1) || localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+  let accountCode = location.hash.slice(1);
   if (!accountCode) {
+    localStorage.removeItem(STORAGE_PREFIX + 'stats');
     const res = await fetch('/api/new-account', { method: 'POST' });
     const data = await res.json();
     accountCode = data.code;
+    location.hash = accountCode;
   }
-  location.hash = accountCode;
-  localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
   document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"]').forEach(link => {
     const path = link.getAttribute('href').split('#')[0];
     link.href = path + '#' + accountCode;
@@ -19,21 +19,11 @@
   });
   if (res.ok) {
     const data = await res.json();
-    if (data.deck) localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(data.deck));
     if (data.stats) localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(data.stats));
   }
   const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
-  const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
-  const ORDER = [
-    'peep','bib','tot','dead','kick','gag','fee','vow','thigh','they','so','zoo',
-    'sure','measure','church','judge','yea','woe','hung','haha','loll','roar','mime',
-    'nun','if','eat','egg','age','ash','ice','ado','up','on','oak','wool','ooze',
-    'out','oil','ah','awe','are','or','air','err','array','ear','ian','yew'
-  ];
-  const deckMap = new Map(storedDeck.map(d => [d.id, d]));
-  const deck = ORDER.map(id => deckMap.get(id)).filter(Boolean);
+  const deck = await (await fetch('/api/deck')).json();
 
-  document.getElementById('totalSessions').textContent = stats.sessions || 1;
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
   document.getElementById('totalWrong').textContent = stats.totalWrong || 0;
   const total = (stats.totalCorrect || 0) + (stats.totalWrong || 0);
