@@ -6,6 +6,9 @@ This repository contains the source for a small Go web application that drills t
 - Format Go source files with `gofmt -w`.
 - Use two spaces for indentation in JavaScript, HTML, and CSS files.
 
+## Changes
+- All changes to wigets and workflow need to also be updated in the help page.
+
 ## Testing
 - Run `go test ./...` before committing to ensure the project builds (currently there are no tests).
 
