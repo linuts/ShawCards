@@ -37,8 +37,6 @@ td.glyph{ font-size:22px; }
 .chart-wrap{ max-width:100%; }
 @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } #cardFront{ font-size:72px; } }
 
-.keyboard{ display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
-.keyboard button{ width:40px; height:40px; font-size:24px; padding:0; }
 #spellInput{ width:100%; margin-top:8px; font-size:24px; padding:8px; border:1px solid var(--line); border-radius:12px; }
 
 .pair-grid,
@@ -62,3 +60,25 @@ td.glyph{ font-size:22px; }
 .cell{ text-align:center; }
 .cell .glyph{ font-size:32px; }
 .cell .name{ font-size:12px; color:var(--muted); }
+
+.card-controls{ justify-content:center; }
+
+@media (max-width:600px){
+  body.flashcard-page{ padding-bottom:70px; }
+  .card-controls{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    margin:0;
+    border-top:1px solid var(--line);
+    background:rgba(255,255,255,0.95);
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    padding:8px;
+    gap:8px;
+  }
+  .card-controls button{
+    padding:16px 0;
+    font-size:18px;
+  }
+  body.flashcard-page .tip{ display:none; }
+}
