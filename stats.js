@@ -216,7 +216,7 @@
     const acc = tries ? Math.round((p.correct / tries) * 100) : 0;
     const tr = document.createElement('tr');
     tr.innerHTML = `<td class="glyph">${p.glyph}</td><td>${p.name}</td><td class="tr">${p.correct}</td><td class="tr">${p.wrong}</td><td class="tr">${acc}%</td>`;
-    tr.querySelector('td.glyph').addEventListener('click', () => showCardChart(p.id));
+    tr.addEventListener('click', () => showCardChart(p.id));
     perCardBody.appendChild(tr);
   });
 })();
