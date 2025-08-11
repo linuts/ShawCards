@@ -23,6 +23,7 @@
   const deck = await (await fetch('/api/deck')).json();
 
   const cardChartWrap = document.getElementById('cardChartWrap');
+  const cardProgressTitle = document.getElementById('cardProgressTitle');
 
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
   document.getElementById('totalWrong').textContent = stats.totalWrong || 0;
@@ -216,6 +217,9 @@
     cardProgressChart.data.datasets[2].data = futureUpper;
     cardProgressChart.data.datasets[3].data = futureLower;
     cardProgressChart.update();
+    const card = deck.find(d => d.id === id);
+    cardProgressTitle.textContent = `Card ${card.glyph}`;
+    cardProgressTitle.style.display = 'block';
     cardChartWrap.style.display = 'block';
   }
 
