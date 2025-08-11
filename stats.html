@@ -30,6 +30,17 @@
     <div class="chart-wrap">
       <canvas id="perCardChart"></canvas>
     </div>
+
+    <h2>Per-card stats</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Letter</th><th>Name</th><th class="tr">✔︎</th><th class="tr">✖︎</th><th class="tr">Acc</th></tr></thead>
+        <tbody id="perCardBody"></tbody>
+      </table>
+    </div>
+    <div class="chart-wrap" id="cardChartWrap" style="display:none;">
+      <canvas id="cardProgressChart" height="80"></canvas>
+    </div>
   </main>
 
   <footer class="foot">Built with Go + vanilla JS. Data lives in your browser (localStorage).</footer>

@@ -23,10 +23,6 @@
   const cardBack  = el('cardBack');
   const progressInner = el('progressInner');
   const forecastInner = el('forecastInner');
-  const correctCount = el('correctCount');
-  const wrongCount = el('wrongCount');
-  const accuracy = el('accuracy');
-  const perCardBody = el('perCardBody');
   let saveTimer;
   function scheduleSave() {
     if (!accountCode) return;
@@ -213,21 +209,6 @@
     cardProgressChart.data.datasets[2].data = futureUpper;
     cardProgressChart.data.datasets[3].data = futureLower;
     cardProgressChart.update();
-
-    correctCount.textContent = stats.totalCorrect;
-    wrongCount.textContent = stats.totalWrong;
-    const total = stats.totalCorrect + stats.totalWrong;
-    accuracy.textContent = (total ? Math.round((stats.totalCorrect / total) * 100) : 0) + '%';
-
-    perCardBody.innerHTML = '';
-    deck.forEach(d => {
-      const pc = stats.perCard[d.id] || {correct:0, wrong:0};
-      const tries = pc.correct + pc.wrong;
-      const acc = tries ? Math.round((pc.correct / tries) * 100) : 0;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td class="glyph">${d.glyph}</td><td>${d.name}</td><td class="tr">${pc.correct}</td><td class="tr">${pc.wrong}</td><td class="tr">${acc}%</td>`;
-      perCardBody.appendChild(tr);
-    });
 
     persist();
   }
