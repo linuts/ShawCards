@@ -24,7 +24,6 @@
   const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
   const deck = await (await fetch('/api/deck')).json();
 
-  const perCardBody = document.getElementById('perCardBody');
   const cardChartWrap = document.getElementById('cardChartWrap');
 
   document.getElementById('totalCorrect').textContent = stats.totalCorrect || 0;
@@ -138,7 +137,8 @@
     }
   });
 
-  const ctx = document.getElementById('perCardChart').getContext('2d');
+  const perCardCanvas = document.getElementById('perCardChart');
+  const ctx = perCardCanvas.getContext('2d');
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -153,6 +153,12 @@
       scales: {
         x: { stacked: true },
         y: { stacked: true, beginAtZero: true }
+      },
+      onClick: (evt, elements) => {
+        if (elements.length) {
+          const index = elements[0].index;
+          showCardChart(perCardStats[index].id);
+        }
       }
     }
   });
@@ -210,13 +216,4 @@
     cardChartWrap.style.display = 'block';
   }
 
-  perCardBody.innerHTML = '';
-  perCardStats.forEach(p => {
-    const tries = p.correct + p.wrong;
-    const acc = tries ? Math.round((p.correct / tries) * 100) : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="glyph">${p.glyph}</td><td>${p.name}</td><td class="tr">${p.correct}</td><td class="tr">${p.wrong}</td><td class="tr">${acc}%</td>`;
-    tr.addEventListener('click', () => showCardChart(p.id));
-    perCardBody.appendChild(tr);
-  });
 })();
