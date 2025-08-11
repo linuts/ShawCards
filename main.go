@@ -135,10 +135,7 @@ func main() {
 	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS account_totals (account_code TEXT PRIMARY KEY, total_correct INTEGER, total_wrong INTEGER, sessions INTEGER, FOREIGN KEY(account_code) REFERENCES accounts(code))"); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS card_stats (account_code TEXT, card_id INTEGER, correct INTEGER, wrong INTEGER, PRIMARY KEY(account_code, card_id), FOREIGN KEY(account_code) REFERENCES accounts(code), FOREIGN KEY(card_id) REFERENCES deck(id))"); err != nil {
-		log.Fatal(err)
-	}
-	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS attempts (id INTEGER PRIMARY KEY AUTOINCREMENT, account_code TEXT, card_id INTEGER, ts INTEGER, result TEXT, FOREIGN KEY(account_code) REFERENCES accounts(code), FOREIGN KEY(card_id) REFERENCES deck(id))"); err != nil {
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS card_stats (id INTEGER PRIMARY KEY AUTOINCREMENT, account_code TEXT, card_id INTEGER, ts INTEGER, result TEXT, FOREIGN KEY(account_code) REFERENCES accounts(code), FOREIGN KEY(card_id) REFERENCES deck(id))"); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS deck (id INTEGER PRIMARY KEY, glyph TEXT, name TEXT, ipa TEXT)"); err != nil {
@@ -250,23 +247,13 @@ func main() {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
-		if _, err := tx.Exec("DELETE FROM attempts WHERE account_code=?", req.Code); err != nil {
-			tx.Rollback()
-			http.Error(w, "db", http.StatusInternalServerError)
-			return
-		}
 		for idStr, pc := range req.Stats.PerCard {
 			id, err := strconv.Atoi(idStr)
 			if err != nil {
 				continue
 			}
-			if _, err := tx.Exec("INSERT INTO card_stats(account_code, card_id, correct, wrong) VALUES(?, ?, ?, ?)", req.Code, id, pc.Correct, pc.Wrong); err != nil {
-				tx.Rollback()
-				http.Error(w, "db", http.StatusInternalServerError)
-				return
-			}
 			for _, a := range pc.Attempts {
-				if _, err := tx.Exec("INSERT INTO attempts(account_code, card_id, ts, result) VALUES(?, ?, ?, ?)", req.Code, id, a.T, a.Result); err != nil {
+				if _, err := tx.Exec("INSERT INTO card_stats(account_code, card_id, ts, result) VALUES(?, ?, ?, ?)", req.Code, id, a.T, a.Result); err != nil {
 					tx.Rollback()
 					http.Error(w, "db", http.StatusInternalServerError)
 					return
@@ -307,43 +294,33 @@ func main() {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
-		rows, err := db.Query("SELECT card_id, correct, wrong FROM card_stats WHERE account_code=?", req.Code)
+		rows, err := db.Query("SELECT card_id, ts, result FROM card_stats WHERE account_code=? ORDER BY ts", req.Code)
 		if err != nil {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
 		for rows.Next() {
-			var id, correct, wrong int
-			if err := rows.Scan(&id, &correct, &wrong); err != nil {
-				rows.Close()
-				http.Error(w, "db", http.StatusInternalServerError)
-				return
-			}
-			stats.PerCard[strconv.Itoa(id)] = perCard{Correct: correct, Wrong: wrong}
-		}
-		rows.Close()
-		arows, err := db.Query("SELECT card_id, ts, result FROM attempts WHERE account_code=? ORDER BY ts", req.Code)
-		if err != nil {
-			http.Error(w, "db", http.StatusInternalServerError)
-			return
-		}
-		for arows.Next() {
 			var cardID int
 			var ts int64
 			var result string
-			if err := arows.Scan(&cardID, &ts, &result); err != nil {
-				arows.Close()
+			if err := rows.Scan(&cardID, &ts, &result); err != nil {
+				rows.Close()
 				http.Error(w, "db", http.StatusInternalServerError)
 				return
 			}
 			a := attempt{T: ts, Result: result}
 			idStr := strconv.Itoa(cardID)
 			pc := stats.PerCard[idStr]
+			if result == "correct" {
+				pc.Correct++
+			} else {
+				pc.Wrong++
+			}
 			pc.Attempts = append(pc.Attempts, a)
 			stats.PerCard[idStr] = pc
 			stats.Attempts = append(stats.Attempts, a)
 		}
-		arows.Close()
+		rows.Close()
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]statsData{"stats": stats})
 	})
