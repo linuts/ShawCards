@@ -17,7 +17,8 @@ body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sa
 button{ padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:#fff; cursor:pointer; }
 button.correct{ background: #10b981; color:#fff; border-color:#10b981; }
 button.wrong{ background: #fecaca; border-color:#fecaca; }
-#cardProgressChart{ width:100% !important; height:160px !important; }
+.chart-wrap{ max-width:100%; height:260px; }
+.chart-wrap canvas{ width:100% !important; height:100% !important; }
 .progress{ position:relative; height:8px; background:#e5e7eb; border-radius:9999px; overflow:hidden; margin:8px 0 14px; }
 #forecastInner{ position:absolute; top:0; left:0; height:100%; width:0%; background:#3b82f6; opacity:.4; }
 #progressInner{ position:absolute; top:0; left:0; height:100%; width:0%; background:#10b981; }
@@ -35,7 +36,6 @@ td.glyph{ font-size:22px; }
 #perCardChart{ cursor:pointer; }
 .tip{ color:var(--muted); font-size:12px; }
 .stats-page{ max-width:900px; margin:0 auto; padding:16px; }
-.chart-wrap{ max-width:100%; }
 @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } #cardFront{ font-size:72px; } }
 
 #spellInput{ width:100%; margin-top:8px; font-size:24px; padding:8px; border:1px solid var(--line); border-radius:12px; }
@@ -82,5 +82,5 @@ td.glyph{ font-size:22px; }
     font-size:18px;
   }
   body.flashcard-page .tip{ display:none; }
-  #cardProgressChart{ height:120px !important; }
+  .chart-wrap{ height:40vh; }
 }

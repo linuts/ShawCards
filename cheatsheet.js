@@ -32,7 +32,7 @@
     const div = document.createElement('div');
     div.className = 'cell';
     div.innerHTML = `<div class="glyph">${letter.glyph}</div><div class="name">${letter.name}</div>`;
-    div.addEventListener('click', () => { input.value += letter.glyph; });
+    div.addEventListener('click', () => { input.value += letter.glyph; input.focus(); });
     return div;
   }
 

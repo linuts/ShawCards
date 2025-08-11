@@ -79,6 +79,7 @@
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { top: 16 } },
       scales: { x: { type: 'time' }, y: { beginAtZero: true, max: 100 } },
       plugins: { legend: { display: false } }
     }
