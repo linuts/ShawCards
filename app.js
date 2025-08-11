@@ -49,7 +49,7 @@
       accountCode = data.code;
       location.hash = accountCode;
     }
-    document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"]').forEach(a => {
+    document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"], a[href="/help"]').forEach(a => {
       a.href = a.getAttribute('href') + '#' + accountCode;
     });
     const res = await fetch('/api/load', {

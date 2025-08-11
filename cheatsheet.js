@@ -6,7 +6,7 @@
     accountCode = data.code;
     location.hash = accountCode;
   }
-  document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"]').forEach(link => {
+  document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"], a[href="/help"]').forEach(link => {
     const path = link.getAttribute('href').split('#')[0];
     link.href = path + '#' + accountCode;
   });
