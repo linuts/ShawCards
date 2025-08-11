@@ -66,10 +66,12 @@
     sessions: 1,
     attempts: [],
   };
+  let accountCode = localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
 
   function persist() {
     localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(deck));
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
+    if (accountCode) localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
 
@@ -81,6 +83,11 @@
   const wrongCount = el('wrongCount');
   const accuracy = el('accuracy');
   const perCardBody = el('perCardBody');
+  const codeInput = el('accountCode');
+  const loginBtn = el('loginBtn');
+  const saveBtn = el('saveBtn');
+  const newAccountBtn = el('newAccountBtn');
+  if (codeInput) codeInput.value = accountCode;
   const cardProgressChart = new Chart(document.getElementById('cardProgressChart').getContext('2d'), {
     type: 'line',
     data: {
@@ -302,6 +309,48 @@
   document.getElementById('resetDeckBtn').addEventListener('click', () => {
     deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
+
+  async function loadAccount() {
+    const code = codeInput.value.trim();
+    if (!code) { alert('Enter account code'); return; }
+    accountCode = code;
+    localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
+    const res = await fetch('/api/load', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: accountCode })
+    });
+    if (!res.ok) { alert('Account not found'); return; }
+    const data = await res.json();
+    deck = data.deck || deck;
+    stats = data.stats || stats;
+    currentId = deck[0] ? deck[0].id : currentId;
+    flipped = false;
+    render();
+  }
+
+  async function saveAccount() {
+    if (!accountCode) { alert('No account code'); return; }
+    await fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: accountCode, deck, stats })
+    });
+    alert('Saved');
+  }
+
+  async function newAccount() {
+    const res = await fetch('/api/new-account', { method: 'POST' });
+    const data = await res.json();
+    accountCode = data.code;
+    if (codeInput) codeInput.value = accountCode;
+    localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
+    alert('Your account code: ' + accountCode);
+  }
+
+  loginBtn && loginBtn.addEventListener('click', loadAccount);
+  saveBtn && saveBtn.addEventListener('click', saveAccount);
+  newAccountBtn && newAccountBtn.addEventListener('click', newAccount);
 
   currentId = deck[0].id;
   render();
