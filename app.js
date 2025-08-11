@@ -78,6 +78,8 @@
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 16 } },
       scales: { x: { type: 'time' }, y: { beginAtZero: true, max: 100 } },
       plugins: { legend: { display: false } }
     }
@@ -237,7 +239,8 @@
 
   const card = document.getElementById('card');
   card.addEventListener('click', () => { flipped = !flipped; render(); });
-  card.addEventListener('keydown', (e) => {
+
+  window.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowUp') { e.preventDefault(); flipped = !flipped; render(); }
     if (e.code === 'ArrowDown') { e.preventDefault(); skip(); }
     if (e.code === 'ArrowLeft') { e.preventDefault(); record('wrong'); }

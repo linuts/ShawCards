@@ -22,6 +22,7 @@
     if (data.stats) localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(data.stats));
   }
   const deck = await (await fetch('/api/deck')).json();
+  const input = document.getElementById('spellInput');
 
   function get(id) {
     return deck.find(d => d.id === id) || { glyph: id, name: id };
@@ -31,6 +32,7 @@
     const div = document.createElement('div');
     div.className = 'cell';
     div.innerHTML = `<div class="glyph">${letter.glyph}</div><div class="name">${letter.name}</div>`;
+    div.addEventListener('click', () => { input.value += letter.glyph; input.focus(); });
     return div;
   }
 
@@ -64,15 +66,6 @@
 
   const compoundGrid = document.getElementById('compoundGrid');
   compounds.forEach(id => { compoundGrid.appendChild(makeCell(get(id))); });
-
-  const input = document.getElementById('spellInput');
-  const keyboard = document.getElementById('keyboard');
-  deck.forEach(d => {
-    const btn = document.createElement('button');
-    btn.textContent = d.glyph;
-    btn.addEventListener('click', () => { input.value += d.glyph; });
-    keyboard.appendChild(btn);
-  });
 
   document.getElementById('clearBtn').addEventListener('click', () => { input.value = ''; });
   document.getElementById('backspaceBtn').addEventListener('click', () => { input.value = input.value.slice(0, -1); });
