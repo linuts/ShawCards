@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "modernc.org/sqlite"
 )
@@ -40,6 +41,25 @@ type deckEntry struct {
 	Glyph string
 	Name  string
 	IPA   string
+}
+
+type attempt struct {
+	T      int64  `json:"t"`
+	Result string `json:"result"`
+}
+
+type perCard struct {
+	Correct  int       `json:"correct"`
+	Wrong    int       `json:"wrong"`
+	Attempts []attempt `json:"attempts"`
+}
+
+type statsData struct {
+	TotalCorrect int                `json:"totalCorrect"`
+	TotalWrong   int                `json:"totalWrong"`
+	Sessions     int                `json:"sessions"`
+	PerCard      map[string]perCard `json:"perCard"`
+	Attempts     []attempt          `json:"attempts"`
 }
 
 var defaultDeck = []deckEntry{
@@ -112,7 +132,13 @@ func main() {
 	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS accounts (code TEXT PRIMARY KEY)"); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS account_stats (account_code TEXT PRIMARY KEY, stats TEXT, FOREIGN KEY(account_code) REFERENCES accounts(code))"); err != nil {
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS account_totals (account_code TEXT PRIMARY KEY, total_correct INTEGER, total_wrong INTEGER, sessions INTEGER, FOREIGN KEY(account_code) REFERENCES accounts(code))"); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS card_stats (account_code TEXT, card_id INTEGER, correct INTEGER, wrong INTEGER, PRIMARY KEY(account_code, card_id), FOREIGN KEY(account_code) REFERENCES accounts(code), FOREIGN KEY(card_id) REFERENCES deck(id))"); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS attempts (id INTEGER PRIMARY KEY AUTOINCREMENT, account_code TEXT, card_id INTEGER, ts INTEGER, result TEXT, FOREIGN KEY(account_code) REFERENCES accounts(code), FOREIGN KEY(card_id) REFERENCES deck(id))"); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS deck (id INTEGER PRIMARY KEY, glyph TEXT, name TEXT, ipa TEXT)"); err != nil {
@@ -198,8 +224,8 @@ func main() {
 			return
 		}
 		var req struct {
-			Code  string          `json:"code"`
-			Stats json.RawMessage `json:"stats"`
+			Code  string    `json:"code"`
+			Stats statsData `json:"stats"`
 		}
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, "bad json", http.StatusBadRequest)
@@ -209,7 +235,45 @@ func main() {
 			http.Error(w, "missing code", http.StatusBadRequest)
 			return
 		}
-		if _, err := db.Exec("INSERT INTO account_stats(account_code, stats) VALUES(?, ?) ON CONFLICT(account_code) DO UPDATE SET stats=excluded.stats", req.Code, string(req.Stats)); err != nil {
+		tx, err := db.Begin()
+		if err != nil {
+			http.Error(w, "db", http.StatusInternalServerError)
+			return
+		}
+		if _, err := tx.Exec("INSERT INTO account_totals(account_code, total_correct, total_wrong, sessions) VALUES(?, ?, ?, ?) ON CONFLICT(account_code) DO UPDATE SET total_correct=excluded.total_correct, total_wrong=excluded.total_wrong, sessions=excluded.sessions", req.Code, req.Stats.TotalCorrect, req.Stats.TotalWrong, req.Stats.Sessions); err != nil {
+			tx.Rollback()
+			http.Error(w, "db", http.StatusInternalServerError)
+			return
+		}
+		if _, err := tx.Exec("DELETE FROM card_stats WHERE account_code=?", req.Code); err != nil {
+			tx.Rollback()
+			http.Error(w, "db", http.StatusInternalServerError)
+			return
+		}
+		if _, err := tx.Exec("DELETE FROM attempts WHERE account_code=?", req.Code); err != nil {
+			tx.Rollback()
+			http.Error(w, "db", http.StatusInternalServerError)
+			return
+		}
+		for idStr, pc := range req.Stats.PerCard {
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				continue
+			}
+			if _, err := tx.Exec("INSERT INTO card_stats(account_code, card_id, correct, wrong) VALUES(?, ?, ?, ?)", req.Code, id, pc.Correct, pc.Wrong); err != nil {
+				tx.Rollback()
+				http.Error(w, "db", http.StatusInternalServerError)
+				return
+			}
+			for _, a := range pc.Attempts {
+				if _, err := tx.Exec("INSERT INTO attempts(account_code, card_id, ts, result) VALUES(?, ?, ?, ?)", req.Code, id, a.T, a.Result); err != nil {
+					tx.Rollback()
+					http.Error(w, "db", http.StatusInternalServerError)
+					return
+				}
+			}
+		}
+		if err := tx.Commit(); err != nil {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
@@ -232,18 +296,56 @@ func main() {
 			http.Error(w, "missing code", http.StatusBadRequest)
 			return
 		}
-		var stats sql.NullString
-		err := db.QueryRow("SELECT stats FROM account_stats WHERE account_code=?", req.Code).Scan(&stats)
-		if err != nil && err != sql.ErrNoRows {
+		var stats statsData
+		stats.PerCard = make(map[string]perCard)
+		err := db.QueryRow("SELECT total_correct, total_wrong, sessions FROM account_totals WHERE account_code=?", req.Code).Scan(&stats.TotalCorrect, &stats.TotalWrong, &stats.Sessions)
+		if err == sql.ErrNoRows {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, "{\"stats\":null}")
+			return
+		} else if err != nil {
 			http.Error(w, "db", http.StatusInternalServerError)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		if stats.Valid {
-			fmt.Fprintf(w, "{\"stats\":%s}", stats.String)
-		} else {
-			fmt.Fprint(w, "{\"stats\":null}")
+		rows, err := db.Query("SELECT card_id, correct, wrong FROM card_stats WHERE account_code=?", req.Code)
+		if err != nil {
+			http.Error(w, "db", http.StatusInternalServerError)
+			return
 		}
+		for rows.Next() {
+			var id, correct, wrong int
+			if err := rows.Scan(&id, &correct, &wrong); err != nil {
+				rows.Close()
+				http.Error(w, "db", http.StatusInternalServerError)
+				return
+			}
+			stats.PerCard[strconv.Itoa(id)] = perCard{Correct: correct, Wrong: wrong}
+		}
+		rows.Close()
+		arows, err := db.Query("SELECT card_id, ts, result FROM attempts WHERE account_code=? ORDER BY ts", req.Code)
+		if err != nil {
+			http.Error(w, "db", http.StatusInternalServerError)
+			return
+		}
+		for arows.Next() {
+			var cardID int
+			var ts int64
+			var result string
+			if err := arows.Scan(&cardID, &ts, &result); err != nil {
+				arows.Close()
+				http.Error(w, "db", http.StatusInternalServerError)
+				return
+			}
+			a := attempt{T: ts, Result: result}
+			idStr := strconv.Itoa(cardID)
+			pc := stats.PerCard[idStr]
+			pc.Attempts = append(pc.Attempts, a)
+			stats.PerCard[idStr] = pc
+			stats.Attempts = append(stats.Attempts, a)
+		}
+		arows.Close()
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]statsData{"stats": stats})
 	})
 
 	mux.HandleFunc("/api/deck", func(w http.ResponseWriter, r *http.Request) {
