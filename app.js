@@ -78,6 +78,7 @@
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       scales: { x: { type: 'time' }, y: { beginAtZero: true, max: 100 } },
       plugins: { legend: { display: false } }
     }

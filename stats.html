@@ -11,7 +11,7 @@
 <body>
   <header class="bar">
     <h1>Stats</h1>
-    <div class="actions"><a href="/" class="button-link">Cards</a><a href="/cheatsheet" class="button-link">Cheat sheet</a></div>
+    <nav class="actions"><a href="/">Cards</a><a href="/cheatsheet">Cheat sheet</a></nav>
   </header>
 
   <main class="stats-page">
@@ -31,12 +31,9 @@
       <canvas id="perCardChart"></canvas>
     </div>
     <div class="chart-wrap" id="cardChartWrap" style="display:none;">
-      <canvas id="cardProgressChart" height="80"></canvas>
+      <canvas id="cardProgressChart"></canvas>
     </div>
   </main>
-
-  <footer class="foot">Built with Go + vanilla JS. Data lives in your browser (localStorage).</footer>
-
   <script src="/stats.js"></script>
 </body>
 </html>
