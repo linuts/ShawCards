@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   const DEFAULT_DECK = [
     // Shavian letters in alphabetical order
     { id: "peep", glyph: "𐑐", name: "(P)eep", ipa: "/p/", type: "Tall Letter - Voiceless Consonant" },
@@ -66,10 +66,13 @@
     sessions: 1,
     attempts: [],
   };
+  let accountCode = localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
 
   function persist() {
     localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(deck));
     localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats));
+    if (accountCode) localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
+    scheduleSave();
   }
   function current() { return deck.find(d => d.id === currentId) || deck[0]; }
 
@@ -81,6 +84,46 @@
   const wrongCount = el('wrongCount');
   const accuracy = el('accuracy');
   const perCardBody = el('perCardBody');
+  let saveTimer;
+  function scheduleSave() {
+    if (!accountCode) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      fetch('/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: accountCode, deck, stats })
+      });
+    }, 1000);
+  }
+  window.addEventListener('beforeunload', () => {
+    if (!accountCode) return;
+    navigator.sendBeacon('/api/save', new Blob([JSON.stringify({ code: accountCode, deck, stats })], { type: 'application/json' }));
+  });
+
+  async function ensureAccount() {
+    accountCode = location.hash.slice(1) || localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+    if (!accountCode) {
+      const res = await fetch('/api/new-account', { method: 'POST' });
+      const data = await res.json();
+      accountCode = data.code;
+    }
+    location.hash = accountCode;
+    localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
+    document.querySelectorAll('a[href="/stats"], a[href="/cheatsheet"]').forEach(a => {
+      a.href = a.getAttribute('href') + '#' + accountCode;
+    });
+    const res = await fetch('/api/load', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: accountCode })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      deck = data.deck || deck;
+      stats = data.stats || stats;
+    }
+  }
   const cardProgressChart = new Chart(document.getElementById('cardProgressChart').getContext('2d'), {
     type: 'line',
     data: {
@@ -303,6 +346,7 @@
     deckTextarea.value = JSON.stringify(DEFAULT_DECK, null, 2);
   });
 
+  await ensureAccount();
   currentId = deck[0].id;
   render();
 })();

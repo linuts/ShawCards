@@ -1,5 +1,27 @@
-(() => {
+(async () => {
   const STORAGE_PREFIX = 'shavian_go_v1_';
+  let accountCode = location.hash.slice(1) || localStorage.getItem(STORAGE_PREFIX + 'accountCode') || '';
+  if (!accountCode) {
+    const res = await fetch('/api/new-account', { method: 'POST' });
+    const data = await res.json();
+    accountCode = data.code;
+  }
+  location.hash = accountCode;
+  localStorage.setItem(STORAGE_PREFIX + 'accountCode', accountCode);
+  document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"]').forEach(link => {
+    const path = link.getAttribute('href').split('#')[0];
+    link.href = path + '#' + accountCode;
+  });
+  const res = await fetch('/api/load', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: accountCode })
+  });
+  if (res.ok) {
+    const data = await res.json();
+    if (data.deck) localStorage.setItem(STORAGE_PREFIX + 'deck', JSON.stringify(data.deck));
+    if (data.stats) localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(data.stats));
+  }
   const stats = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'stats') || '{}');
   const storedDeck = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'deck') || '[]');
   const ORDER = [
