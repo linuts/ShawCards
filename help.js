@@ -8,6 +8,7 @@
     location.hash = accountCode;
     isNew = true;
   }
+  localStorage.setItem('accountCode', accountCode);
   document.querySelectorAll('a[href="/"], a[href="/stats"], a[href="/cheatsheet"], a[href="/help"]').forEach(link => {
     const path = link.getAttribute('href').split('#')[0];
     link.href = path + '#' + accountCode;

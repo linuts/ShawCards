@@ -8,7 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
   <script>
-    if (!location.hash) location.replace('/help');
+    if (!location.hash) {
+      const saved = localStorage.getItem('accountCode');
+      if (saved && confirm('Load saved progress?')) {
+        location.hash = saved;
+      } else {
+        location.replace('/help');
+      }
+    }
   </script>
 </head>
   <body class="flashcard-page">

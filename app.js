@@ -61,6 +61,7 @@
         stats = data.stats;
       }
     }
+    localStorage.setItem('accountCode', accountCode);
   }
   const cardProgressChart = new Chart(document.getElementById('cardProgressChart').getContext('2d'), {
     type: 'line',
