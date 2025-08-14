@@ -15,31 +15,31 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-//go:embed index.html
+//go:embed static/html/index.html
 var indexHTML string
 
-//go:embed app.js
+//go:embed static/js/app.js
 var appJS string
 
-//go:embed styles.css
+//go:embed static/css/styles.css
 var stylesCSS string
 
-//go:embed stats.html
+//go:embed static/html/stats.html
 var statsHTML string
 
-//go:embed stats.js
+//go:embed static/js/stats.js
 var statsJS string
 
-//go:embed cheatsheet.html
+//go:embed static/html/cheatsheet.html
 var cheatHTML string
 
-//go:embed cheatsheet.js
+//go:embed static/js/cheatsheet.js
 var cheatJS string
 
-//go:embed help.html
+//go:embed static/html/help.html
 var helpHTML string
 
-//go:embed help.js
+//go:embed static/js/help.js
 var helpJS string
 var db *sql.DB
 
