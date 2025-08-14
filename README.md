@@ -2,6 +2,15 @@
 
 ShawCards is a small web application for practicing the Shavian alphabet with flashcards. The server is written in Go and serves a simple front end that lets you quiz yourself, view statistics, and reference a cheat sheet. Static HTML, CSS, and JavaScript assets live under the `static/` directory.
 
+### Flashcards
+<img width="1918" height="853" alt="image" src="https://github.com/user-attachments/assets/b9154e4c-d932-4c3a-9c00-c8b73c7aa28e" />
+
+### Stas
+<img width="1918" height="853" alt="image" src="https://github.com/user-attachments/assets/3cd7e08f-3432-49f6-b62e-80e9df0b9602" />
+
+### Cheat Sheet
+<img width="1918" height="853" alt="image" src="https://github.com/user-attachments/assets/62335168-454a-4d6d-9d56-167f2c35b930" />
+
 ## Getting Started
 
 1. **Install Go** (version 1.20 or later recommended).
