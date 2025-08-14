@@ -12,6 +12,16 @@ ShawCards is a small web application for practicing the Shavian alphabet with fl
    The application listens on [http://localhost:8080](http://localhost:8080).
 3. The first run creates a `data.db` SQLite database in the project directory to store progress.
 
+## Building
+
+Use the provided script to build binaries for Linux, macOS, and Windows on both `amd64` and `arm64` architectures:
+
+```bash
+./build.sh
+```
+
+The compiled binaries are written to the `build` directory as `shawcards_<os>_<arch>`.
+
 ## Available Pages
 
 - `/` – Flashcard practice interface
