@@ -14,13 +14,13 @@ ShawCards is a small web application for practicing the Shavian alphabet with fl
 
 ## Building
 
-Use the provided script to build binaries for Linux, macOS, and Windows:
+Use the provided script to build binaries for Linux, macOS, and Windows on both `amd64` and `arm64` architectures:
 
 ```bash
 ./build.sh
 ```
 
-The compiled binaries are written to the `build` directory.
+The compiled binaries are written to the `build` directory as `shawcards_<os>_<arch>`.
 
 ## Available Pages
 
