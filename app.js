@@ -11,6 +11,9 @@
     attempts: [],
   };
   let accountCode = '';
+  let history = [];
+  let lastKeyTime = 0;
+  const keyDelay = 200;
 
   function persist() {
     scheduleSave();
@@ -221,15 +224,34 @@
     (pc.attempts || (pc.attempts = [])).push({ t: now, result });
     stats.perCard[id] = pc;
     (stats.attempts || (stats.attempts = [])).push({ t: now, result });
+    history.push({ id, result });
     currentId = selectNext();
     flipped = false;
     render();
   }
   function skip() {
+    history.push({ id: current().id, result: null });
     currentId = selectNext();
     flipped = false;
     render();
   }
+  function back() {
+    const last = history.pop();
+    if (!last) return;
+    currentId = last.id;
+    flipped = false;
+    if (last.result) {
+      const pc = stats.perCard[last.id];
+      if (pc) {
+        if (last.result === 'correct') { pc.correct--; stats.totalCorrect--; }
+        else { pc.wrong--; stats.totalWrong--; }
+        pc.attempts.pop();
+      }
+      stats.attempts.pop();
+    }
+    render();
+  }
+  el('backBtn').addEventListener('click', back);
   el('skipBtn').addEventListener('click', skip);
   el('wrongBtn').addEventListener('click', () => record('wrong'));
   el('correctBtn').addEventListener('click', () => record('correct'));
@@ -238,10 +260,15 @@
   card.addEventListener('click', () => { flipped = !flipped; render(); });
 
   window.addEventListener('keydown', (e) => {
-    if (e.code === 'ArrowUp') { e.preventDefault(); flipped = !flipped; render(); }
-    if (e.code === 'ArrowDown') { e.preventDefault(); skip(); }
-    if (e.code === 'ArrowLeft') { e.preventDefault(); record('wrong'); }
-    if (e.code === 'ArrowRight') { e.preventDefault(); record('correct'); }
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+    e.preventDefault();
+    const now = Date.now();
+    if (now - lastKeyTime < keyDelay) return;
+    lastKeyTime = now;
+    if (e.code === 'ArrowUp') { flipped = !flipped; render(); }
+    if (e.code === 'ArrowDown') { skip(); }
+    if (e.code === 'ArrowLeft') { record('wrong'); }
+    if (e.code === 'ArrowRight') { record('correct'); }
   });
 
   await ensureAccount();
