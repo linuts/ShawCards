@@ -129,7 +129,9 @@ func generateCode() (string, error) {
 
 func main() {
 	var err error
-	db, err = sql.Open("sqlite", "data.db")
+	dbPath := "data.db"
+	log.Printf("Opening database %s", dbPath)
+	db, err = sql.Open("sqlite", dbPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -148,12 +150,14 @@ func main() {
 		log.Fatal(err)
 	}
 	if count == 0 {
+		log.Println("Populating default deck")
 		for i, d := range defaultDeck {
 			if _, err := db.Exec("INSERT INTO deck(id, glyph, name, ipa) VALUES(?, ?, ?, ?)", i+1, d.Glyph, d.Name, d.IPA); err != nil {
 				log.Fatal(err)
 			}
 		}
 	}
+	log.Println("Database initialized")
 
 	mux := http.NewServeMux()
 
@@ -361,6 +365,7 @@ func main() {
 	})
 
 	addr := ":8080"
-	log.Printf("Shavian flashcards server listening on %s", addr)
+	log.Printf("Shavian flashcards server listening on http://localhost%s", addr)
+	log.Println("Press Ctrl+C to stop")
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
